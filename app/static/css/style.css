@@ -1,0 +1,238 @@
+body { font-family: 'Roboto', sans-serif !important; }
+
+
+:root{
+  --bs-body-font-family: 'Roboto', sans-serif;
+  --sidebar-bg: #083c46;      /* koyu teal */
+  --sidebar-bg-2: #0a4b57;    /* hover */
+  --sidebar-active: #0e5b69;  /* active pill */
+  --sidebar-text: #d7e6ea;
+  --sidebar-muted: #9fc0c7;
+  --main-bg: #f6f7f7;
+}
+
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--main-bg); }
+
+.app-shell{
+  display:flex;
+  min-height:100vh;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+.sidebar{
+  width:15%;
+  background:var(--sidebar-bg);
+  color:var(--sidebar-text);
+  display:flex;
+  flex-direction:column;
+  padding:22px 18px;
+}
+
+.sidebar-brand{
+  padding:6px 6px 18px 6px;
+}
+
+.brand-text{
+  display:flex;
+  flex-direction:column;
+  line-height:1.05;
+  padding:4px 6px 18px 6px;
+}
+
+.brand-main{
+  font-size:40px;
+  font-weight:700;
+  color:#ffffff;
+  letter-spacing:.2px;
+}
+
+.brand-sub{
+  font-size:28px;
+  font-weight:500;
+  color:#b7d6dc;
+  margin-top:2px;
+  letter-spacing:.4px;
+}
+
+.tm{
+  font-size:16px;
+  vertical-align:top;
+  margin-left:2px;
+  opacity:.85;
+}
+
+.sidebar-nav{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:18px;
+  flex:1;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 12px;
+  border-radius:12px;
+  color:var(--sidebar-text);
+  text-decoration:none;
+  user-select:none;
+}
+
+.nav-item i{
+  font-size:28px;
+  width:22px;
+  text-align:center;
+  opacity:.95;
+}
+
+.nav-item span{
+  font-size:20px;
+  letter-spacing:.1px;
+}
+
+.nav-item:hover{
+  background:var(--sidebar-bg-2);
+}
+
+.nav-item.active{
+  background:var(--sidebar-active);
+}
+
+.nav-item.disabled{
+  opacity:.75;
+  cursor:not-allowed;
+  background: transparent;
+}
+
+.soon-tag{
+  margin-left:auto;
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:999px;
+  background: rgba(255,255,255,.12);
+  color: var(--sidebar-muted);
+  letter-spacing:.6px;
+}
+
+.sidebar-footer{
+  padding-top:14px;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-icons{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  justify-content: center;
+  padding:10px 6px;
+}
+
+.footer-icon{
+  color: var(--sidebar-text);
+  text-decoration:none;
+  font-size:40px;
+  opacity:.95;
+}
+
+.footer-icon:hover{ opacity:1; }
+
+.powered{
+  margin-top:6px;
+  font-size:12px;
+  color: var(--sidebar-muted);
+  padding:0 6px;
+}
+
+.app-main{
+  flex:1;
+  /* padding:1rem; */
+}
+
+/* Product Status Modal */
+.product-status-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.status-summary {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.status-pill {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    color: #333;
+}
+
+.status-pill-risk { background-color: #fbe9e7; border: 1px solid #ffab91; }
+.status-pill-incomplete { background-color: #fff8e1; border: 1px solid #ffe082; }
+.status-pill-compliant { background-color: #e8f5e9; border: 1px solid #a5d6a7; }
+
+.status-pill-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.status-pill-value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.status-pill-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.status-pill-delta {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-pill-delta.up { color: #c62828; }
+.status-pill-delta.down { color: #2e7d32; }
+
+.status-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.status-row {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+}
+
+.status-row:last-child {
+    border-bottom: none;
+}
+
+.status-row-head {
+    font-weight: 700;
+    color: #333;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
+}
+
+.status-row .center { text-align: center; }
+.status-row .right { text-align: right; }
+
+.status-view {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+

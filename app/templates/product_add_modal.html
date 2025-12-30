@@ -1,0 +1,207 @@
+<!-- Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productModalLabel">Add New Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" novalidate id="productForm">
+          <input type="hidden" name="product_id" id="productId">
+          <!-- Product Code -->
+          <div class="mb-3">
+            <label for="productCode" class="form-label">Product Code <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="productCode" name="productCode">
+            <div class="invalid-feedback">Please provide a product code.</div>
+          </div>
+
+          <!-- Secondary Product Code -->
+          <div class="mb-3">
+            <label for="secondaryProductCode" class="form-label">Secondary Product Code</label>
+            <input type="text" class="form-control" id="secondaryProductCode" name="secondaryProductCode">
+          </div>
+
+          <!-- Product Category -->
+          <div class="mb-3">
+            <label for="productCategory" class="form-label">Product Category</label>
+            <input type="text" class="form-control" id="productCategory" name="productCategory">
+          </div>
+
+          <!-- Product Description -->
+          <div class="mb-3">
+            <label for="productDescription" class="form-label">Product Description</label>
+            <textarea class="form-control" id="productDescription" name="productDescription" rows="3" maxlength="100"></textarea>
+          </div>
+
+          <!-- Material -->
+          <div class="mb-3">
+            <label for="material" class="form-label">Product Material <span class="text-danger">*</span></label>
+            <select class="form-select" id="material" name="material" onchange="toggleProductFields()">
+              <option value="">-- Select --</option>
+              <option value="solid">Solid</option>
+              <option value="liquid/gas">Liquid / Gas</option>
+            </select>
+            <div class="invalid-feedback">Please provide a product material.</div>
+          </div>
+
+          <!-- Liquid/Gas Volume -->
+          <div id="liquidGasField" class="d-none">
+            <div class="mb-3">
+              <label for="productVolume" class="form-label">Product Volume (cm³) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" id="productVolume" name="productVolume" min="0" step="any" onkeydown="preventNegative(event)">
+              <div class="invalid-feedback">Please provide a product volume.</div>
+            </div>
+          </div>
+
+          <!-- Solid Material Fields -->
+          <div id="solidField" class="d-none">
+            <!-- Product Shape -->
+            <div class="mb-3">
+              <label for="productShape" class="form-label">Product Shape <span class="text-danger">*</span></label>
+              <select class="form-select" id="productShape" name="productShape" onchange="toggleProductFields()">
+                <option value="">-- Select --</option>
+                <option value="rectangular">Rectangular Prism</option>
+                <option value="cylinder">Cylinder</option>
+                <option value="sphere">Sphere</option>
+              </select>
+              <div class="invalid-feedback">Please provide a product shape.</div>
+            </div>
+          </div>
+
+          <!-- Rectangular Dimensions -->
+          <div id="rectangularFields" class="d-none">
+            <label class="mb-2 form-label">Product Dimensions (cm) <span class="text-danger">*</span></label>
+            <div class="row g-2 mb-3">
+              <div class="col-md-4"><label class="form-label">Length</label><input type="number" class="form-control" name="length" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+              <div class="col-md-4"><label class="form-label">Height</label><input type="number" class="form-control" name="height" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+              <div class="col-md-4"><label class="form-label">Width</label><input type="number" class="form-control" name="width" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+            </div>
+          </div>
+
+          <!-- Cylinder Dimensions -->
+          <div id="cylinderFields" class="d-none">
+            <label class="mb-2 form-label">Product Dimensions (cm) <span class="text-danger">*</span></label>
+            <div class="row g-2 mb-3">
+              <div class="col-md-6"><label class="form-label">Height</label><input type="number" class="form-control" name="cylHeight" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+              <div class="col-md-6"><label class="form-label">Radius</label><input type="number" class="form-control" name="cylRadius" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+            </div>
+          </div>
+
+          <!-- Sphere Dimensions -->
+          <div id="sphereFields" class="d-none mb-3">
+            <label class="mb-2 form-label">Product Dimensions (cm) <span class="text-danger">*</span></label>
+            <div class="row g-2 mb-3">
+              <div class="col-md-6"><label class="form-label">Radius</label><input type="number" class="form-control" name="sphRadius" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" id="productSubmitBtn" class="btn btn-primary">Add Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function toggleProductFields() {
+        const form = document.getElementById('productForm');
+        const material = form.querySelector("#material").value;
+        const shape = form.querySelector("#productShape").value;
+
+        form.querySelector("#solidField").classList.add("d-none");
+        form.querySelector("#liquidGasField").classList.add("d-none");
+        form.querySelector("#rectangularFields").classList.add("d-none");
+        form.querySelector("#cylinderFields").classList.add("d-none");
+        form.querySelector("#sphereFields").classList.add("d-none");
+
+        if (material === "solid") {
+            form.querySelector("#solidField").classList.remove("d-none");
+            if (shape === "rectangular") {
+                form.querySelector("#rectangularFields").classList.remove("d-none");
+            } else if (shape === "cylinder") {
+                form.querySelector("#cylinderFields").classList.remove("d-none");
+            } else if (shape === "sphere") {
+                form.querySelector("#sphereFields").classList.remove("d-none");
+            }
+        } else if (material === "liquid/gas") {
+            form.querySelector("#liquidGasField").classList.remove("d-none");
+        }
+    }
+
+    document.getElementById('productForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const form = this;
+        let isValid = true;
+
+        // Reset previous validation
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        
+        // --- General fields ---
+        const productCode = form.querySelector('#productCode');
+        if (!productCode.value) {
+            productCode.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        const material = form.querySelector('#material');
+        if (!material.value) {
+            material.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        // --- Conditional fields ---
+        if (material.value === 'liquid/gas') {
+            const productVolume = form.querySelector('#productVolume');
+            if (!productVolume.value) {
+                productVolume.classList.add('is-invalid');
+                isValid = false;
+            }
+        } else if (material.value === 'solid') {
+            const productShape = form.querySelector('#productShape');
+            if (!productShape.value) {
+                productShape.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                const shape = productShape.value;
+                const dimFields = form.querySelector(`#${shape}Fields`);
+                if (dimFields) {
+                    dimFields.querySelectorAll('input').forEach(input => {
+                        if (!input.value) {
+                            input.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    });
+                }
+            }
+        }
+
+        if (isValid) {
+            form.submit();
+        }
+    });
+
+    function preventNegative(e) {
+        const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter'];
+        const key = e.key;
+
+        if (allowedKeys.includes(key) || (e.ctrlKey || e.metaKey)) {
+            return;
+        }
+
+        if ((key < '0' || key > '9') && key !== '.') {
+            e.preventDefault();
+        }
+
+        if (key === '.' && e.target.value.includes('.')) {
+            e.preventDefault();
+        }
+        
+        if (key === '-' || key === 'e' || key === 'E') {
+            e.preventDefault();
+        }
+    }
+</script>

@@ -1,0 +1,68 @@
+<!-- Modal -->
+<div class="modal fade" id="editPackagingSupplierModal" tabindex="-1" aria-labelledby="editPackagingSupplierModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editPackagingSupplierModalLabel">Edit Linked Supplier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="editPackagingSupplierForm">
+          <input type="hidden" name="package_id" id="editSupplierPackageId">
+          <input type="hidden" name="package_level" id="editSupplierPackageLevel">
+
+          <!-- Supplier -->
+          <div class="mb-3">
+            <label for="supplier" class="form-label">Supplier</label>
+            <select class="form-select" id="supplier" name="supplier_id">
+              <option value="">-- Select --</option>
+              {% for partner in partners %}
+                {% if partner.partner_type == 'supplier' %}
+                  <option value="{{ partner._id }}">{{ partner.partner_name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editSupplierModal = document.getElementById('editPackagingSupplierModal');
+    if(editSupplierModal) {
+        const form = document.getElementById('editPackagingSupplierForm');
+        const packageIdInput = document.getElementById('editSupplierPackageId');
+        const packageLevelInput = document.getElementById('editSupplierPackageLevel');
+
+        editSupplierModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const packageId = button.getAttribute('data-package-id');
+            const packageLevel = button.getAttribute('data-package-level');
+
+            packageIdInput.value = packageId;
+            packageLevelInput.value = packageLevel;
+            form.action = `/update_packaging_supplier_connection`;
+
+            // Pre-select the current supplier
+            fetch(`/get_packaging_details?id=${packageId}&level=${packageLevel}`)
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('supplier');
+                    if (data.supplier_id) {
+                        select.value = data.supplier_id;
+                    } else {
+                        select.value = "";
+                    }
+                });
+        });
+    }
+});
+</script>

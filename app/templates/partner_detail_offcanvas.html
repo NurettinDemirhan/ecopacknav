@@ -1,0 +1,36 @@
+<!-- Partner Details Offcanvas -->
+<div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="partnerDetailOffcanvas" aria-labelledby="partnerDetailOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="partnerDetailOffcanvasLabel">Partner Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="offcanvas-partner-content">
+        <div id="offcanvas-partner-name-container">
+            <div class="detail-line">
+                <span class="detail-label">Name:</span>
+                <span id="offcanvas-partner-name"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Type:</span>
+                <span id="offcanvas-partner-type"></span>
+            </div>
+             <div class="detail-line">
+                <span class="detail-label">Country:</span>
+                <span id="offcanvas-partner-country"></span>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5 id="offcanvas-partner-connections-label">Linked Items</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editPartnerConnectionsModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <ul class="list-group" id="offcanvas-partner-connections-list">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

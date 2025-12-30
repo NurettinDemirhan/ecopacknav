@@ -1,0 +1,69 @@
+<!-- Modal -->
+<div class="modal fade" id="editPackagingModal" tabindex="-1" aria-labelledby="editPackagingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editPackagingModalLabel">Edit Linked Packagings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="editPackagingForm">
+          <input type="hidden" name="product_id" id="editPackagingProductId">
+
+          <!-- Primary Packaging -->
+          <div class="mb-3">
+            <label for="primaryPackage" class="form-label">Primary Packaging</label>
+            <select class="form-select" id="primaryPackage" name="primary_package">
+              <option value="">-- Select --</option>
+              {% for pkg in all_primary_packagings %}
+              <option value="{{ pkg._id }}">{{ pkg.package_code }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Secondary Packaging -->
+          <div class="mb-3">
+            <label for="secondaryPackage" class="form-label">Secondary Packaging</label>
+            <select class="form-select" id="secondaryPackage" name="secondary_package">
+              <option value="">-- Select --</option>
+              {% for pkg in all_secondary_packagings %}
+              <option value="{{ pkg._id }}">{{ pkg.package_code }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Tertiary Packaging -->
+          <div class="mb-3">
+            <label for="tertiaryPackage" class="form-label">Tertiary Packaging</label>
+            <select class="form-select" id="tertiaryPackage" name="tertiary_package">
+              <option value="">-- Select --</option>
+              {% for pkg in all_tertiary_packagings %}
+              <option value="{{ pkg._id }}">{{ pkg.package_code }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editPackagingModal = document.getElementById('editPackagingModal');
+    const editPackagingForm = document.getElementById('editPackagingForm');
+    const productIdInput = document.getElementById('editPackagingProductId');
+
+    editPackagingModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const productId = button.getAttribute('data-product-id');
+        productIdInput.value = productId;
+        editPackagingForm.action = `/update_product_packaging_connections/${productId}`;
+    });
+});
+</script>

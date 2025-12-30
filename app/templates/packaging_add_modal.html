@@ -1,0 +1,309 @@
+<!-- Modal -->
+<div class="modal fade" id="addPackagingModal" tabindex="-1" aria-labelledby="addPackagingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPackagingModalLabel">Add New Packaging</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ url_for('main.add_packaging') }}" novalidate id="addPackagingForm">
+          
+          <!-- Packaging Level -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="packagingLevel" class="form-label">Packaging Level <span class="text-danger">*</span></label>
+              <select class="form-select" id="packagingLevel" name="packagingLevel">
+                <option value="">-- Select Level --</option>
+                <option value="Primary">Primary</option>
+                <option value="Secondary">Secondary</option>
+                <option value="Tertiary">Tertiary</option>
+              </select>
+              <div class="invalid-feedback">Please select a packaging level.</div>
+            </div>
+          </div>
+
+          <!-- Common Fields (Initially hidden) -->
+          <div id="packagingCommonFields" class="d-none">
+            
+            <div class="row">
+                <!-- Left Column: Main Details -->
+                <div class="col-lg-6">
+                    <!-- Package Code -->
+                    <div class="mb-3">
+                        <label for="packageCode" class="form-label">Package Code <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="packageCode" name="packageCode">
+                        <div class="invalid-feedback">Please provide a package code.</div>
+                    </div>
+
+                    <!-- Package Shape & Dimensions -->
+                    <div class="mb-3">
+                        <label for="packageShape" class="form-label">Package Shape <span class="text-danger">*</span></label>
+                        <select class="form-select" id="packageShape" name="packageShape" onchange="toggleShapeFields(this)">
+                            <option value="">-- Select Shape --</option>
+                            <option value="rectangular">Rectangular Prism</option>
+                            <option value="cylinder">Cylinder</option>
+                            <option value="sphere">Sphere</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a shape.</div>
+                    </div>
+
+                    <div id="rectangularFields" class="d-none">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-4"><label class="form-label">Length (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="length"><div class="invalid-feedback">Required.</div></div>
+                            <div class="col-md-4"><label class="form-label">Width (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="width"><div class="invalid-feedback">Required.</div></div>
+                            <div class="col-md-4"><label class="form-label">Height (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="height"><div class="invalid-feedback">Required.</div></div>
+                        </div>
+                    </div>
+                    <div id="cylinderFields" class="d-none">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6"><label class="form-label">Radius (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="cylRadius"><div class="invalid-feedback">Required.</div></div>
+                            <div class="col-md-6"><label class="form-label">Height (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="cylHeight"><div class="invalid-feedback">Required.</div></div>
+                        </div>
+                    </div>
+                    <div id="sphereFields" class="d-none mb-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6"><label class="form-label">Radius (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="sphRadius"><div class="invalid-feedback">Required.</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Recyclability (Not Mandatory) -->
+                    <div class="mb-3">
+                        <label for="recyclability" class="form-label">Recyclability</label>
+                        <select class="form-select" id="recyclability" name="recyclability">
+                            <option value="">-- Select --</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+
+                    <!-- Level Specific -->
+                    <div id="secondaryPackagingFields" class="d-none mb-3">
+                        <label for="quantity_primary_in_secondary_unit" class="form-label">Qty of Primary Packs in this Pack <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantity_primary_in_secondary_unit" name="quantity_primary_in_secondary_unit" min="1" step="1">
+                        <div class="invalid-feedback">Required.</div>
+                    </div>
+                    <div id="tertiaryPackagingFields" class="d-none mb-3">
+                        <label for="quantity_secondary_in_tertiary_unit" class="form-label">Qty of Secondary Packs in this Pack <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantity_secondary_in_tertiary_unit" name="quantity_secondary_in_tertiary_unit" min="1" step="1">
+                         <div class="invalid-feedback">Required.</div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Materials -->
+                <div class="col-lg-6">
+                    <h6>Material Composition</h6>
+                    <div id="materialsContainer">
+                        <!-- Material Group Template (initially one is shown) -->
+                        <div class="material-group border rounded p-3 mb-3">
+                            <div class="row">
+                                <div class="col-11"><h6 class="mb-3">Component 1</h6></div>
+                                <div class="col-1"><button type="button" class="btn-close d-none" aria-label="Close" onclick="removeMaterial(this)"></button></div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6"><label class="form-label">Component Type <span class="text-danger">*</span></label><select class="form-select" name="packageComponent[]"><option value="">-- Select --</option><option value="Bottle">Bottle</option><option value="Cap">Cap</option><option value="Label">Label</option><option value="Box">Box</option><option value="Wrapper">Wrapper</option><option value="Other">Other</option></select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-6"><label class="form-label">Material <span class="text-danger">*</span></label><select class="form-select" name="material[]"><option value="">-- Select --</option><option value="PET">PET</option><option value="HDPE">HDPE</option><option value="PP">PP</option><option value="Cardboard">Cardboard</option><option value="Glass">Glass</option><option value="Aluminium">Aluminium</option><option value="Steel">Steel</option></select><div class="invalid-feedback">Required.</div></div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6"><label class="form-label">Weight (g) <span class="text-danger">*</span></label><input type="number" name="weightGrams[]" class="form-control"><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-6"><label class="form-label">Recycled %</label><input type="number" name="recycledContent[]" class="form-control"></div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-4"><label class="form-label">Thickness (µm) <span class="text-danger">*</span></label><input type="number" name="thicknessMicrons[]" class="form-control"><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-4"><label class="form-label">Adhesive <span class="text-danger">*</span></label><select name="adhesiveType[]" class="form-select"><option value="">-- Select --</option><option value="None">None</option><option value="Hot-melt">Hot-melt</option><option value="Acrylic">Acrylic</option></select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-4"><label class="form-label">Food Contact <span class="text-danger">*</span></label><select name="foodContact[]" class="form-select"><option value="">-- Select --</option><option value="No">No</option><option value="Yes (dry)">Yes (dry)</option><option value="Yes (indirect)">Yes (indirect)</option></select><div class="invalid-feedback">Required.</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addMaterial()">+ Add Component</button>
+                </div>
+            </div>
+          </div>
+
+          <div class="modal-footer mt-4">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" id="packagingSubmitBtn">Add Packaging</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Ensure scripts are loaded and DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+    const levelSelect = document.getElementById('packagingLevel');
+    if (levelSelect) {
+        levelSelect.addEventListener('change', function() {
+            const level = this.value;
+            const commonFields = document.getElementById('packagingCommonFields');
+            const secondaryFields = document.getElementById('secondaryPackagingFields');
+            const tertiaryFields = document.getElementById('tertiaryPackagingFields');
+
+            commonFields.classList.add('d-none');
+            secondaryFields.classList.add('d-none');
+            tertiaryFields.classList.add('d-none');
+
+            if (level) {
+                commonFields.classList.remove('d-none');
+                if (level === 'Secondary') {
+                    secondaryFields.classList.remove('d-none');
+                } else if (level === 'Tertiary') {
+                    tertiaryFields.classList.remove('d-none');
+                }
+            }
+        });
+    }
+
+    const form = document.getElementById('addPackagingForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let isValid = true;
+        
+        // Reset previous validation
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+        // --- Validate fields in the visible parts of the form ---
+        const levelSelect = form.querySelector('#packagingLevel');
+        if (!levelSelect.value) {
+            levelSelect.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        const commonFields = form.querySelector('#packagingCommonFields');
+        if (!commonFields.classList.contains('d-none')) {
+            // Package Code
+            const packageCode = form.querySelector('#packageCode');
+            if (!packageCode.value) {
+                packageCode.classList.add('is-invalid');
+                isValid = false;
+            }
+
+            // Package Shape
+            const packageShape = form.querySelector('#packageShape');
+            if (!packageShape.value) {
+                packageShape.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                // Conditional dimension validation
+                const shape = packageShape.value;
+                const dimFields = form.querySelector(`#${shape}Fields`);
+                if (dimFields) {
+                    dimFields.querySelectorAll('input').forEach(input => {
+                        if (!input.value) {
+                            input.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    });
+                }
+            }
+            
+            // Level specific fields
+            ['secondaryPackagingFields', 'tertiaryPackagingFields'].forEach(id => {
+                const container = form.querySelector(`#${id}`);
+                if (!container.classList.contains('d-none')) {
+                    container.querySelectorAll('input').forEach(input => {
+                        if(!input.value) {
+                            input.classList.add('is-invalid');
+                            isValid = false;
+                        }
+                    });
+                }
+            });
+
+            // Material components validation
+            form.querySelectorAll('#materialsContainer .material-group').forEach(group => {
+                // Fields to validate inside each component
+                // Excludes 'recycledContent[]'
+                const mandatoryInGroup = [
+                    'select[name="packageComponent[]"]',
+                    'select[name="material[]"]',
+                    'input[name="weightGrams[]"]',
+                    'input[name="thicknessMicrons[]"]',
+                    'select[name="adhesiveType[]"]',
+                    'select[name="foodContact[]"]'
+                ];
+                mandatoryInGroup.forEach(selector => {
+                    const field = group.querySelector(selector);
+                    if (field && !field.value) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                });
+            });
+        }
+
+        if (isValid) {
+            form.submit();
+        }
+    });
+});
+
+function toggleShapeFields(selectElement) {
+    const shape = selectElement.value;
+    const modal = selectElement.closest('.modal-body');
+    const rectangular = modal.querySelector('#rectangularFields');
+    const cylinder = modal.querySelector('#cylinderFields');
+    const sphere = modal.querySelector('#sphereFields');
+    
+    rectangular.classList.add('d-none');
+    cylinder.classList.add('d-none');
+    sphere.classList.add('d-none');
+
+    if (shape === 'rectangular') rectangular.classList.remove('d-none');
+    if (shape === 'cylinder') cylinder.classList.remove('d-none');
+    if (shape === 'sphere') sphere.classList.remove('d-none');
+}
+
+function addMaterial() {
+    const container = document.getElementById('materialsContainer');
+    // Find the first material group to use as a template
+    const template = container.querySelector('.material-group');
+    if (!template) return; // Should not happen
+    const clone = template.cloneNode(true);
+    const count = container.children.length;
+
+    clone.querySelector('h6').textContent = `Component ${count + 1}`;
+    clone.querySelectorAll('input, select').forEach(el => {
+        if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+        el.classList.remove('is-invalid');
+    });
+
+    const removeBtn = clone.querySelector('.btn-close');
+    if(removeBtn) removeBtn.classList.remove('d-none');
+
+    container.appendChild(clone);
+    updateRemoveButtons();
+}
+
+function removeMaterial(button) {
+    const group = button.closest('.material-group');
+    group.remove();
+    updateRemoveButtons();
+    // Re-number headings
+    const container = document.getElementById('materialsContainer');
+    container.querySelectorAll('.material-group').forEach((grp, index) => {
+        grp.querySelector('h6').textContent = `Component ${index + 1}`;
+    });
+}
+
+function updateRemoveButtons() {
+    const container = document.getElementById('materialsContainer');
+    const groups = container.querySelectorAll('.material-group');
+    if (groups.length <= 1) {
+        const firstBtn = groups.length > 0 ? groups[0].querySelector('.btn-close') : null;
+        if (firstBtn) firstBtn.classList.add('d-none');
+    } else {
+        groups.forEach(g => {
+            const btn = g.querySelector('.btn-close');
+            if (btn) btn.classList.remove('d-none');
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', updateRemoveButtons);
+</script>

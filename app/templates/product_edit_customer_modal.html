@@ -1,0 +1,49 @@
+<!-- Modal -->
+<div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCustomerModalLabel">Edit Linked Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" id="editCustomerForm">
+          <input type="hidden" name="product_id" id="editCustomerProductId">
+
+          <!-- Customer -->
+          <div class="mb-3">
+            <label for="customer" class="form-label">Customer</label>
+            <select class="form-select" id="customer" name="customer">
+              <option value="">-- Select --</option>
+              {% for partner in partners %}
+                {% if partner.partner_type == 'customer' %}
+                  <option value="{{ partner._id }}">{{ partner.partner_name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editCustomerModal = document.getElementById('editCustomerModal');
+    const editCustomerForm = document.getElementById('editCustomerForm');
+    const productIdInput = document.getElementById('editCustomerProductId');
+
+    editCustomerModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const productId = button.getAttribute('data-product-id');
+        productIdInput.value = productId;
+        editCustomerForm.action = `/update_product_customer_connection/${productId}`;
+    });
+});
+</script>

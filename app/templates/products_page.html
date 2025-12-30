@@ -1,0 +1,941 @@
+{% extends "base.html" %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products_page.css') }}">
+{% endblock %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+
+<div class="products-page-shell">
+
+    <header class="products-page-header">
+        <h1 class="products-page-header-text">Profiles</h1>
+        <!-- <h1 class="products-page-header-text shade-out">Packaging Designer <span class="head-soon">SOON</span></h1> -->
+    </header>
+    
+    <section class="products-page-top-section">
+
+        <div class="product-list">
+
+            <div class="product-list-header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <h2 class="product-list-header-text">Product List</h2>
+                    <button type="button" class="product-list-header-link" data-bs-toggle="modal" data-bs-target="#addProductModal">+</button>
+                </div>
+                <input type="text" id="productSearch" class="form-control" placeholder="Search Products..." style="width: 250px; margin-left: auto;">
+                <button type="button" id="expandProductListBtn" class="btn btn-outline-secondary ms-2" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+            </div>
+
+            <div class="product-list-table">
+
+                <!-- SABİT TABLO BAŞLIĞI -->
+                <div class="product-list-head" id="product-list-header">
+                    <div class="product-list-row product-list-row--head product-list-row-products">
+                        <div class="sortable-header" data-column-index="0" data-sort-by="product_code">Product <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="sortable-header" data-column-index="1" data-sort-by="secondary_product_code">Sec. Code <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="sortable-header" data-column-index="2" data-sort-by="product_category">Category <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="sortable-header" data-column-index="3" data-sort-by="packaging_status">Packaging <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="4">Description <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="5">Material <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="6">Shape <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="7">Volume <i class="bi bi-arrow-down-up"></i></div>
+                        <div>Actions</div>
+                    </div>
+                </div>
+
+                <!-- ROW -->
+                <div class="product-list-body">
+                    {% for product in products %}
+                        <div class="product-list-row product-row-clickable product-list-row-products" data-product-id="{{ product._id }}">
+                        <div>{{ product.product_code }}</div>
+                        <div class="{{ '' if product.secondary_product_code else 'text-muted' }}">{{ product.secondary_product_code or '—' }}</div>
+                        <div>{{ product.product_category or '—' }}</div>
+                        <div style="color: {{ product.packaging_status_color }}; font-weight: 500;">{{ product.packaging_status }}</div>
+                        <div class="extra-col" title="{{ product.product_description or '' }}">{{ product.product_description or '—' }}</div>
+                        <div class="extra-col">{{ product.product_material or '—' }}</div>
+                        <div class="extra-col">{{ product.product_shape or '—' }}</div>
+                        <div class="extra-col">
+                            {% if 'volume_cm3' in product and product.volume_cm3 is not none %}
+                                {{ "%.1f"|format(product.volume_cm3|float) }}
+                            {% elif 'product_volume' in product and product.product_volume is not none %}
+                                {{ "%.1f"|format(product.product_volume|float) }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+
+                        <div class="cell" style="display: flex; gap: 0.3rem; align-items: center; justify-content: center;">
+                            <button
+                                class="btn btn-sm btn-outline-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#productSalesModal"
+                                data-product-id="{{ product._id }}"
+                                data-product-code="{{ product.product_code }}"
+                                type="button"
+                                title="View Sales"
+                                >
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-outline-secondary edit-product-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addProductModal"
+                                data-product-id="{{ product._id }}"
+                                type="button"
+                                title="Edit Product"
+                                >
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-outline-danger delete-product-btn"
+                                data-product-id="{{ product._id }}"
+                                data-product-code="{{ product.product_code }}"
+                                type="button"
+                                title="Delete Product"
+                                >
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                        
+                        </div>
+                    {% endfor %}
+                </div>
+            
+
+            </div>
+
+        </div>
+
+        <div class="product-list">
+
+            <div class="product-list-header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <h2 class="product-list-header-text">Partner List</h2>
+                    <button type="button" class="product-list-header-link" data-bs-toggle="modal" data-bs-target="#addPartnerModal">+</button>
+                </div>
+                <input type="text" id="partnerSearch" class="form-control" placeholder="Search Partners..." style="width: 250px; margin-left: auto;">
+            </div>
+
+            <div class="product-list-table">
+
+                <!-- SABİT TABLO BAŞLIĞI -->
+                <div class="product-list-head" id="partner-list-header">
+                    <div class="product-list-row product-list-row--head product-list-row-partners">
+                        <div class="sortable-header" data-column-index="0">Name <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="sortable-header" data-column-index="1">Type <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="sortable-header" data-column-index="2">Country <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="sortable-header" data-column-index="3">Linked Items <i class="bi bi-arrow-down-up"></i></div>
+                        <div>Actions</div>
+                    </div>
+                </div>
+
+                <!-- ROW -->
+                <div class="product-list-body" id="partner-list-body">
+                    {% for partner in partners %}
+                        <div class="product-list-row partners-list-row product-list-row-partners partner-row-clickable" data-partner-id="{{ partner._id }}">
+                            <div>{{ partner.partner_name or '—' }}</div>
+                            <div>{{ partner.partner_type or '—' }}</div>
+                            <div>{{ partner.country or '—' }}</div>
+                            <div>{{ partner.connections|length }}</div>
+                            <div class="cell" style="display: flex; gap: 0.3rem; align-items: center; justify-content: center;">
+                                <button
+                                    class="btn btn-sm btn-outline-secondary edit-partner-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addPartnerModal"
+                                    data-partner-id="{{ partner._id }}"
+                                    type="button"
+                                    title="Edit Partner"
+                                    >
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button
+                                    class="btn btn-sm btn-outline-danger delete-partner-btn"
+                                    data-partner-id="{{ partner._id }}"
+                                    data-partner-name="{{ partner.partner_name }}"
+                                    type="button"
+                                    title="Delete Partner"
+                                    >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            
+                        </div>
+                    {% endfor %}
+                </div>
+            
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+    <section class="products-page-bottom-section">
+
+        <div class="packaging-overview">
+
+            <div class="packaging-overview-header">
+            <!-- <h2>Packaging Overview</h2> -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <h2 class="product-list-header-text">Packaging List</h2>
+                    <button type="button" class="packaging-overview-add" data-bs-toggle="modal" data-bs-target="#addPackagingModal">+</button>
+                </div>
+            <input type="text" id="packagingSearch" class="form-control" placeholder="Search Packaging..." style="width: 250px; margin-left: auto;">
+            <button type="button" id="expandPackagingListBtn" class="btn btn-outline-secondary ms-2" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
+            </div>
+
+            <!-- TABLE -->
+            <div class="packaging-overview-table">
+
+            <!-- HEAD -->
+            <div class="packaging-row packaging-row-head" id="packaging-list-header">
+                <div class="sortable-header" data-column-index="0">Packaging <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header" data-column-index="1">Level <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header" data-column-index="2">Component Type <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header" data-column-index="3">Material <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header" data-column-index="4">Supplier <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="5">Products Using <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="6">Recyclability <i class="bi bi-arrow-down-up"></i></div>
+                <div>Actions</div>
+            </div>
+
+            <!-- BODY -->
+            <div class="packaging-overview-body" id="packaging-list-body">
+                {% if packaging_rows %}
+                    {% for row in packaging_rows %}
+                    <div class="packaging-row packaging-row-clickable" data-package-id="{{ row._id }}" data-package-level="{{ row.level }}">
+                        <div>{{ row.package_code }}</div>
+                        <div>{{ row.level }}</div>
+                        <div>{{ row.component_type or '—' }}</div>
+                        <div>{{ row.material }}</div>
+                        <div>{{ row.supplier }}</div>
+                        <div class="center">{{ row.products_using }}</div>
+
+                        {# recyclability grade görünümü #}
+                        {% set g = (row.recyclability|string)|upper %}
+                        {% if g.startswith('A') %}
+                        <div class="grade grade-a">A</div>
+                        {% elif g.startswith('B') %}
+                        <div class="grade grade-b">B</div>
+                        {% elif g.startswith('C') %}
+                        <div class="grade grade-c">C</div>
+                        {% elif g.startswith('D') %}
+                        <div class="grade grade-d">D</div>
+                        {% else %}
+                        <div class="grade">—</div>
+                        {% endif %}
+
+                        <div class="cell" style="display: flex; gap: 0.3rem; align-items: center; justify-content: center;">
+                            <button
+                                class="btn btn-sm btn-outline-secondary edit-packaging-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addPackagingModal"
+                                data-package-id="{{ row._id }}"
+                                data-package-level="{{ row.level }}"
+                                type="button"
+                                title="Edit Packaging"
+                                >
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-outline-danger delete-packaging-btn"
+                                data-package-id="{{ row._id }}"
+                                data-package-code="{{ row.package_code }}"
+                                data-package-level="{{ row.level }}"
+                                type="button"
+                                title="Delete Packaging"
+                                >
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                        
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-muted" style="padding: 12px;">No packaging found.</div>
+                {% endif %}
+            </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- Packaging Details Offcanvas -->
+<div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="packagingDetailOffcanvas" aria-labelledby="packagingDetailOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="packagingDetailOffcanvasLabel">Packaging Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="offcanvas-packaging-content">
+        <div id="offcanvas-packaging-code-container">
+            <h3 id="offcanvas-packaging-code"></h3>
+            <p id="offcanvas-packaging-level" class="text-muted"></p>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Products</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editLinkedProductsModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <ul class="list-group" id="offcanvas-linked-products-list">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Partners</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editPackagingSupplierModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <p><strong>Supplier:</strong> <span id="offcanvas-packaging-supplier"></span></p>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Details Offcanvas -->
+<div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="productDetailOffcanvas" aria-labelledby="productDetailOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="productDetailOffcanvasLabel">Product Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="offcanvas-content">
+        <div id="offcanvas-product-code-container">
+            <div class="detail-line">
+                <span class="detail-label">Code:</span>
+                <span id="offcanvas-product-code"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Sec. Code:</span>
+                <span id="offcanvas-sec-product-code"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Category:</span>
+                <span id="offcanvas-product-category"></span>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Packagings</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editPackagingModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <table class="packaging-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Level</th>
+                            <th>Recyclability</th>
+                        </tr>
+                    </thead>
+                    <tbody id="offcanvas-packaging-table-body">
+                        <!-- JS will populate this -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Partners</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editCustomerModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <p><strong>Customer:</strong> <span id="offcanvas-customer"></span></p>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+{% include "product_sales_modal.html" %}
+{% include "product_add_modal.html" %}
+{% include "packaging_add_modal.html" %}
+{% include "partner_add_modal.html" %}
+{% include "product_edit_packaging_modal.html" %}
+{% include "product_edit_customer_modal.html" %}
+{% include "packaging_edit_products_modal.html" %}
+{% include "packaging_edit_supplier_modal.html" %}
+{% include "partner_detail_offcanvas.html" %}
+{% include "partner_edit_connections_modal.html" %}
+
+{% endblock %}
+
+{% block page_js %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Offcanvas for Product Details
+    const productDetailOffcanvas = new bootstrap.Offcanvas(document.getElementById('productDetailOffcanvas'));
+    document.querySelectorAll('.product-row-clickable').forEach(row => {
+        row.addEventListener('click', function (event) {
+            if (event.target.closest('button')) return;
+            const productId = this.dataset.productId;
+            fetch(`/get_product_details/${productId}`).then(response => response.json()).then(data => {
+                if (data) {
+                    document.getElementById('offcanvas-product-code').textContent = data.product_code || '—';
+                    document.getElementById('offcanvas-sec-product-code').textContent = data.secondary_product_code || '—';
+                    document.getElementById('offcanvas-product-category').textContent = data.product_category || '—';
+                    const packagingTableBody = document.getElementById('offcanvas-packaging-table-body');
+                    packagingTableBody.innerHTML = '';
+                    if (data.connections.packaging && data.connections.packaging.length > 0) {
+                        data.connections.packaging.forEach(pkg => {
+                            const row = `<tr><td>${pkg.code || '—'}</td><td>${pkg.level || '—'}</td><td>${pkg.recyclability || '—'}</td></tr>`;
+                            packagingTableBody.insertAdjacentHTML('beforeend', row);
+                        });
+                    } else {
+                        const row = `<tr><td colspan="3" class="text-muted text-center">No packaging linked.</td></tr>`;
+                        packagingTableBody.insertAdjacentHTML('beforeend', row);
+                    }
+                    document.getElementById('offcanvas-customer').textContent = data.connections.customer_name || 'Not linked';
+                    document.querySelector('[data-bs-target="#editPackagingModal"]').setAttribute('data-product-id', productId);
+                    document.querySelector('[data-bs-target="#editCustomerModal"]').setAttribute('data-product-id', productId);
+                    productDetailOffcanvas.show();
+                }
+            }).catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Offcanvas for Packaging Details
+    const packagingDetailOffcanvas = new bootstrap.Offcanvas(document.getElementById('packagingDetailOffcanvas'));
+    document.querySelectorAll('.packaging-row-clickable').forEach(row => {
+        row.addEventListener('click', function(event) {
+            const packageId = this.dataset.packageId;
+            const packageLevel = this.dataset.packageLevel;
+            fetch(`/get_packaging_details?id=${packageId}&level=${packageLevel}`).then(response => response.json()).then(data => {
+                if (data) {
+                    document.getElementById('offcanvas-packaging-code').textContent = data.package_code || '—';
+                    document.getElementById('offcanvas-packaging-level').textContent = data.level || '—';
+                    const linkedProductsList = document.getElementById('offcanvas-linked-products-list');
+                    linkedProductsList.innerHTML = '';
+                    if (data.linked_products && data.linked_products.length > 0) {
+                        data.linked_products.forEach(product => {
+                            const item = `<li class="list-group-item">${product.product_code}</li>`;
+                            linkedProductsList.insertAdjacentHTML('beforeend', item);
+                        });
+                    } else {
+                        const item = `<li class="list-group-item text-muted">No products linked.</li>`;
+                        linkedProductsList.insertAdjacentHTML('beforeend', item);
+                    }
+                    document.getElementById('offcanvas-packaging-supplier').textContent = data.supplier_name || 'Not linked';
+                    document.querySelector('[data-bs-target="#editLinkedProductsModal"]').setAttribute('data-package-id', packageId);
+                    document.querySelector('[data-bs-target="#editLinkedProductsModal"]').setAttribute('data-package-level', packageLevel);
+                    document.querySelector('[data-bs-target="#editPackagingSupplierModal"]').setAttribute('data-package-id', packageId);
+                    document.querySelector('[data-bs-target="#editPackagingSupplierModal"]').setAttribute('data-package-level', packageLevel);
+                    packagingDetailOffcanvas.show();
+                }
+            }).catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Handler for Product Delete Button
+        document.querySelectorAll('.delete-product-btn').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+                const productId = this.dataset.productId;
+                const productCode = this.dataset.productCode;
+                if (confirm(`Are you sure you want to delete product "${productCode}"? This action cannot be undone.`)) {
+                    fetch(`/delete_product/${productId}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An unexpected error occurred while deleting the product.');
+                    });
+                }
+            });
+        });
+    
+        // Handler for Partner Delete Button
+        document.querySelectorAll('.delete-partner-btn').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.stopPropagation();
+                const partnerId = this.dataset.partnerId;
+                const partnerName = this.dataset.partnerName;
+                if (confirm(`Are you sure you want to delete partner "${partnerName}"? This action cannot be undone.`)) {
+                    fetch(`/delete_partner/${partnerId}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An unexpected error occurred while deleting the partner.');
+                    });
+                }
+            });
+        });
+    
+        // Handler for Packaging Delete Button
+            document.querySelectorAll('.delete-packaging-btn').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    const packageId = this.dataset.packageId;
+                    const packageCode = this.dataset.packageCode;
+                    const packageLevel = this.dataset.packageLevel;
+                    if (confirm(`Are you sure you want to delete packaging "${packageCode}"? This action cannot be undone.`)) {
+                        fetch(`/delete_packaging/${packageId}?level=${packageLevel}`, { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An unexpected error occurred while deleting the packaging.');
+                        });
+                    }
+                });
+            });        
+        // Handler for Add/Edit Product Modal
+        const productModalEl = document.getElementById('addProductModal');
+        if (productModalEl) {
+            const productForm = document.getElementById('productForm');
+            const productModalLabel = document.getElementById('productModalLabel');
+            const productSubmitBtn = document.getElementById('productSubmitBtn');
+    
+            productModalEl.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                
+                productForm.reset();
+                productForm.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                toggleProductFields(); // from product_add_modal.html
+    
+                if (button && button.classList.contains('edit-product-btn')) {
+                    // --- EDIT MODE ---
+                    const productId = button.dataset.productId;
+                    productModalLabel.textContent = 'Edit Product';
+                    productSubmitBtn.textContent = 'Save Changes';
+                    productForm.action = `/update_product/${productId}`;
+    
+                    fetch(`/get_product_details/${productId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data) {
+                                // Populate form
+                                productForm.querySelector('#productCode').value = data.product_code || '';
+                                productForm.querySelector('#secondaryProductCode').value = data.secondary_product_code || '';
+                                productForm.querySelector('#productCategory').value = data.product_category || '';
+                                productForm.querySelector('#productDescription').value = data.product_description || '';
+                                
+                                if (data.product_material) {
+                                    productForm.querySelector('#material').value = data.product_material;
+                                }
+                                if (data.product_material === 'liquid/gas') {
+                                    productForm.querySelector('#productVolume').value = data.product_volume || '';
+                                } else if (data.product_material === 'solid' && data.product_shape) {
+                                    productForm.querySelector('#productShape').value = data.product_shape;
+                                    if (data.dimensions) {
+                                        if (data.product_shape === 'rectangular') {
+                                            productForm.querySelector('[name="length"]').value = data.dimensions.length || '';
+                                            productForm.querySelector('[name="width"]').value = data.dimensions.width || '';
+                                            productForm.querySelector('[name="height"]').value = data.dimensions.height || '';
+                                        } else if (data.product_shape === 'cylinder') {
+                                            productForm.querySelector('[name="cylHeight"]').value = data.dimensions.height || '';
+                                            productForm.querySelector('[name="cylRadius"]').value = data.dimensions.radius || '';
+                                        } else if (data.product_shape === 'sphere') {
+                                            productForm.querySelector('[name="sphRadius"]').value = data.dimensions.radius || '';
+                                        }
+                                    }
+                                }
+                                // IMPORTANT: Trigger the change handler to show correct fields
+                                toggleProductFields();
+                            }
+                        })
+                        .catch(error => console.error('Error fetching product details:', error));
+    
+                } else {
+                    // --- ADD MODE ---
+                    productModalLabel.textContent = 'Add New Product';
+                    productSubmitBtn.textContent = 'Add Product';
+                    productForm.action = "{{ url_for('main.add_product') }}";
+                }
+            });
+        }
+    
+        // Handler for Add/Edit Partner Modal
+            const partnerModalEl = document.getElementById('addPartnerModal');
+            if (partnerModalEl) {
+                const partnerForm = document.getElementById('addPartnerForm');
+                const partnerModalLabel = document.getElementById('addPartnerModalLabel');
+                const partnerSubmitBtn = document.getElementById('partnerSubmitBtn');
+        
+                partnerModalEl.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    
+                    partnerForm.reset();
+                    partnerForm.classList.remove('was-validated');
+        
+                    if (button && button.classList.contains('edit-partner-btn')) {
+                        // --- EDIT MODE ---
+                        const partnerId = button.dataset.partnerId;
+                        partnerModalLabel.textContent = 'Edit Partner';
+                        partnerSubmitBtn.textContent = 'Save Changes';
+                        partnerForm.action = `/update_partner/${partnerId}`;
+        
+                        fetch(`/get_partner_details/${partnerId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data) {
+                                    // Populate form
+                                    partnerForm.querySelector('#partnerName').value = data.partner_name || '';
+                                    partnerForm.querySelector('#partnerType').value = data.partner_type || '';
+                                    partnerForm.querySelector('#country').value = data.country || '';
+                                    partnerForm.querySelector('#email').value = data.email || '';
+                                    partnerForm.querySelector('#phoneNumber').value = data.phone_number || '';
+                                    partnerForm.querySelector('#address').value = data.address || '';
+                                }
+                            })
+                            .catch(error => console.error('Error fetching partner details:', error));
+        
+                    } else {
+                        // --- ADD MODE ---
+                        partnerModalLabel.textContent = 'Add New Partner';
+                        partnerSubmitBtn.textContent = 'Add Partner';
+                        partnerForm.action = "{{ url_for('main.add_partner') }}";
+                    }
+                });
+            }    
+        // Handler for Add/Edit Packaging Modal
+    const packagingModalEl = document.getElementById('addPackagingModal');
+    if (packagingModalEl) {
+        const packagingForm = document.getElementById('addPackagingForm');
+        const packagingModalLabel = document.getElementById('addPackagingModalLabel');
+        const packagingSubmitBtn = document.getElementById('packagingSubmitBtn');
+        const commonFields = document.getElementById('packagingCommonFields');
+        const secondaryFields = document.getElementById('secondaryPackagingFields');
+        const tertiaryFields = document.getElementById('tertiaryPackagingFields');
+
+        packagingModalEl.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            
+            // --- RESET FORM ---
+            packagingForm.reset();
+            packagingForm.classList.remove('was-validated');
+            // Hide all conditional fields
+            commonFields.classList.add('d-none');
+            secondaryFields.classList.add('d-none');
+            tertiaryFields.classList.add('d-none');
+            document.getElementById('rectangularFields').classList.add('d-none');
+            document.getElementById('cylinderFields').classList.add('d-none');
+            document.getElementById('sphereFields').classList.add('d-none');
+            
+            // Reset materials to a single blank group
+            const materialsContainer = document.getElementById('materialsContainer');
+            const materialGroups = materialsContainer.querySelectorAll('.material-group');
+            materialGroups.forEach((group, index) => {
+                if (index > 0) group.remove();
+            });
+            if (materialGroups.length > 0) {
+                const firstGroup = materialGroups[0];
+                firstGroup.querySelector('h6').textContent = 'Component 1';
+                firstGroup.querySelectorAll('input, select').forEach(el => {
+                    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                    else el.value = '';
+                    el.classList.remove('is-invalid');
+                });
+            }
+            updateRemoveButtons();
+
+
+            if (button && button.classList.contains('edit-packaging-btn')) {
+                // --- EDIT MODE ---
+                const packageId = button.dataset.packageId;
+                const packageLevel = button.dataset.packageLevel;
+                packagingModalLabel.textContent = 'Edit Packaging';
+                packagingSubmitBtn.textContent = 'Save Changes';
+                packagingForm.action = `/update_packaging/${packageId}`;
+
+                fetch(`/get_packaging_details?id=${packageId}&level=${packageLevel}&edit=true`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            // --- POPULATE FORM ---
+                            // Level
+                            const levelSelect = packagingForm.querySelector('#packagingLevel');
+                            levelSelect.value = packageLevel;
+                            levelSelect.dispatchEvent(new Event('change'));
+
+                            // Common fields
+                            packagingForm.querySelector('#packageCode').value = data.package_code || '';
+                            packagingForm.querySelector('#recyclability').value = data.recyclability || '';
+                            
+                            // Shape and Dimensions
+                            const shapeSelect = packagingForm.querySelector('#packageShape');
+                            if (data.package_shape) {
+                                shapeSelect.value = data.package_shape;
+                                shapeSelect.dispatchEvent(new Event('change'));
+                                if (data.dimensions) {
+                                    if (data.package_shape === 'rectangular') {
+                                        packagingForm.querySelector('[name="length"]').value = data.dimensions.length || '';
+                                        packagingForm.querySelector('[name="width"]').value = data.dimensions.width || '';
+                                        packagingForm.querySelector('[name="height"]').value = data.dimensions.height || '';
+                                    } else if (data.package_shape === 'cylinder') {
+                                        packagingForm.querySelector('[name="cylHeight"]').value = data.dimensions.height || '';
+                                        packagingForm.querySelector('[name="cylRadius"]').value = data.dimensions.radius || '';
+                                    } else if (data.package_shape === 'sphere') {
+                                        packagingForm.querySelector('[name="sphRadius"]').value = data.dimensions.radius || '';
+                                    }
+                                }
+                            }
+
+                            // Level specific fields
+                            if (packageLevel === 'Secondary') {
+                                packagingForm.querySelector('#quantity_primary_in_secondary_unit').value = data.quantity_primary_in_secondary_unit || '';
+                            } else if (packageLevel === 'Tertiary') {
+                                packagingForm.querySelector('#quantity_secondary_in_tertiary_unit').value = data.quantity_secondary_in_tertiary_unit || '';
+                            }
+
+                            // Materials
+                            const materialsContainer = document.getElementById('materialsContainer');
+                            const firstGroup = materialsContainer.querySelector('.material-group');
+
+                            if (data.materials && data.materials.length > 0) {
+                                data.materials.forEach((materialData, index) => {
+                                    let currentGroup;
+                                    if (index === 0) {
+                                        currentGroup = firstGroup;
+                                    } else {
+                                        addMaterial(); // Clones the first group, resets it, and adds it.
+                                        currentGroup = materialsContainer.lastElementChild;
+                                    }
+                                    
+                                    if(currentGroup) {
+                                        currentGroup.querySelector('[name="packageComponent[]"]').value = materialData.package_component || '';
+                                        currentGroup.querySelector('[name="material[]"]').value = materialData.material || '';
+                                        currentGroup.querySelector('[name="weightGrams[]"]').value = materialData.weight_grams || '';
+                                        currentGroup.querySelector('[name="recycledContent[]"]').value = materialData.recycled_content || '';
+                                        currentGroup.querySelector('[name="thicknessMicrons[]"]').value = materialData.thickness_microns || '';
+                                        currentGroup.querySelector('[name="adhesiveType[]"]').value = materialData.adhesive_type || '';
+                                        currentGroup.querySelector('[name="foodContact[]"]').value = materialData.food_contact || '';
+                                    }
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Error fetching packaging details:', error));
+
+            } else {
+                // --- ADD MODE ---
+                packagingModalLabel.textContent = 'Add New Packaging';
+                packagingSubmitBtn.textContent = 'Add Packaging';
+                packagingForm.action = "{{ url_for('main.add_packaging') }}";
+                packagingForm.querySelector('#packagingLevel').disabled = false;
+            }
+        });
+    }
+
+    const expandBtn = document.getElementById('expandProductListBtn');
+    if (expandBtn) {
+        const topSection = document.querySelector('.products-page-top-section');
+        const icon = expandBtn.querySelector('i');
+
+        expandBtn.addEventListener('click', function() {
+            topSection.classList.toggle('product-list-expanded');
+
+            if (topSection.classList.contains('product-list-expanded')) {
+                icon.className = 'bi bi-arrows-angle-contract';
+                expandBtn.title = 'Collapse';
+            } else {
+                icon.className = 'bi bi-arrows-angle-expand';
+                expandBtn.title = 'Expand';
+            }
+        });
+    }
+
+    const expandPackagingBtn = document.getElementById('expandPackagingListBtn');
+    if (expandPackagingBtn) {
+        const shell = document.querySelector('.products-page-shell');
+        const icon = expandPackagingBtn.querySelector('i');
+
+        expandPackagingBtn.addEventListener('click', function() {
+            shell.classList.toggle('packaging-list-expanded');
+
+            if (shell.classList.contains('packaging-list-expanded')) {
+                icon.className = 'bi bi-arrows-angle-contract';
+                expandPackagingBtn.title = 'Collapse';
+            } else {
+                icon.className = 'bi bi-arrows-angle-expand';
+                expandPackagingBtn.title = 'Expand';
+            }
+        });
+    }
+});</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function enableTableSorting(headerId, bodyId) {
+            const listHeader = document.getElementById(headerId);
+            if (listHeader) {
+                const headers = listHeader.querySelectorAll('.sortable-header');
+                const listBody = document.getElementById(bodyId);
+
+                headers.forEach(header => {
+                    header.addEventListener('click', () => {
+                        const columnIndex = parseInt(header.dataset.columnIndex, 10);
+                        const currentDirection = header.dataset.sortDirection || 'desc';
+                        const nextDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+                        
+                        headers.forEach(h => {
+                            h.dataset.sortDirection = '';
+                            const icon = h.querySelector('i');
+                            if (icon) {
+                                icon.className = 'bi bi-arrow-down-up';
+                            }
+                        });
+
+                        header.dataset.sortDirection = nextDirection;
+                        const icon = header.querySelector('i');
+                        if (icon) {
+                            icon.className = nextDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+                        }
+
+                        const rows = Array.from(listBody.children);
+
+                        rows.sort((rowA, rowB) => {
+                            const cellA = rowA.children[columnIndex].textContent.trim();
+                            const cellB = rowB.children[columnIndex].textContent.trim();
+
+                            const isNumeric = !isNaN(parseFloat(cellA)) && isFinite(cellA) && !isNaN(parseFloat(cellB)) && isFinite(cellB);
+
+                            let valA = isNumeric ? parseFloat(cellA) : cellA.toLowerCase();
+                            let valB = isNumeric ? parseFloat(cellB) : cellB.toLowerCase();
+                            
+                            if (valA === '—') valA = isNumeric ? -Infinity : '';
+                            if (valB === '—') valB = isNumeric ? -Infinity : '';
+
+                            if (valA < valB) return nextDirection === 'asc' ? -1 : 1;
+                            if (valA > valB) return nextDirection === 'asc' ? 1 : -1;
+                            return 0;
+                        });
+
+                        listBody.innerHTML = '';
+                        rows.forEach(row => listBody.appendChild(row));
+                    });
+                });
+            }
+        }
+
+        enableTableSorting('product-list-header', 'product-list-body');
+        enableTableSorting('partner-list-header', 'partner-list-body');
+        enableTableSorting('packaging-list-header', 'packaging-list-body');
+
+        // Offcanvas for Partner Details
+        const partnerDetailOffcanvas = new bootstrap.Offcanvas(document.getElementById('partnerDetailOffcanvas'));
+        document.querySelectorAll('.partner-row-clickable').forEach(row => {
+            row.addEventListener('click', function (event) {
+                if (event.target.closest('button')) return;
+                const partnerId = this.dataset.partnerId;
+                fetch(`/get_partner_details/${partnerId}`).then(response => response.json()).then(data => {
+                    if (data) {
+                        document.getElementById('offcanvas-partner-name').textContent = data.partner_name || '—';
+                        document.getElementById('offcanvas-partner-type').textContent = data.partner_type || '—';
+                        document.getElementById('offcanvas-partner-country').textContent = data.country || '—';
+                        
+                        const connectionsList = document.getElementById('offcanvas-partner-connections-list');
+                        connectionsList.innerHTML = '';
+                        if (data.connections_detailed && data.connections_detailed.length > 0) {
+                            data.connections_detailed.forEach(item => {
+                                const li = `<li class="list-group-item">${item.code} <span class="text-muted">(${item.type})</span></li>`;
+                                connectionsList.insertAdjacentHTML('beforeend', li);
+                            });
+                        } else {
+                            connectionsList.innerHTML = '<li class="list-group-item text-muted">No items linked.</li>';
+                        }
+                        
+                        const editBtn = document.querySelector('[data-bs-target="#editPartnerConnectionsModal"]');
+                        editBtn.setAttribute('data-partner-id', partnerId);
+                        editBtn.setAttribute('data-partner-type', data.partner_type);
+                        editBtn.setAttribute('data-partner-name', data.partner_name);
+
+
+                        partnerDetailOffcanvas.show();
+                    }
+                }).catch(error => console.error('Error:', error));
+            });
+        });
+        
+        // Handler for Edit Partner Connections Modal
+        const editPartnerConnectionsModalEl = document.getElementById('editPartnerConnectionsModal');
+        if (editPartnerConnectionsModalEl) {
+            const form = document.getElementById('editPartnerConnectionsForm');
+            const selectEl = document.getElementById('linkedItemsSelect');
+            const selectLabel = document.getElementById('linkedItemsSelectLabel');
+
+            editPartnerConnectionsModalEl.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const partnerId = button.dataset.partnerId;
+                const partnerType = button.dataset.partnerType.toLowerCase();
+                const partnerName = button.dataset.partnerName;
+
+                form.action = `/update_partner_connections/${partnerId}`;
+                document.getElementById('edit-partner-id').value = partnerId;
+                document.getElementById('partner-name-in-modal').textContent = partnerName;
+
+                selectEl.innerHTML = ''; // Clear previous options
+
+                let fetchUrl = '';
+                if (partnerType === 'customer') {
+                    selectLabel.textContent = 'Link Products to Customer';
+                    fetchUrl = '/get_all_products_json';
+                } else if (partnerType === 'supplier') {
+                    selectLabel.textContent = 'Link Packagings to Supplier';
+                    fetchUrl = '/get_all_packagings_json';
+                }
+
+                if (fetchUrl) {
+                    fetch(fetchUrl)
+                        .then(response => response.json())
+                        .then(items => {
+                            items.forEach(item => {
+                                const optionText = item.level ? `${item.package_code} (${item.level})` : item.product_code;
+                                const option = new Option(optionText, item._id);
+                                selectEl.add(option);
+                            });
+
+                            // Fetch current connections to pre-select them
+                            return fetch(`/get_partner_details/${partnerId}`);
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.connections_detailed) {
+                                const connectedIds = data.connections_detailed.map(item => item._id);
+                                Array.from(selectEl.options).forEach(option => {
+                                    if (connectedIds.includes(option.value)) {
+                                        option.selected = true;
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => console.error('Error populating partner connections modal:', error));
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

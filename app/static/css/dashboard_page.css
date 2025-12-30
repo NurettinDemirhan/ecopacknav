@@ -1,0 +1,87 @@
+body {
+    background-color: rgba(252, 253, 248);
+}
+
+h1 {
+    font-weight: 700;
+}
+.dashboard-page-header{
+    margin-bottom: 0.5rem;
+    line-height: 1;
+    font-weight: 600;
+}
+.dashboard-card {
+    border-radius: 12px;
+    background-color: #fff;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 365px;
+    border: 1px solid rgb(177, 176, 176);
+}
+.btn-primary{
+    background-color: #0a4b57;  
+    border: #0a4b57; 
+}
+.btn-primary:hover{
+    background-color: #0e5b69;   
+}
+.dashboard-card .card-header {
+    background-color: #fff;
+    border-bottom: none;
+    flex-shrink: 0;
+    padding: 0 0 1rem 0;
+}
+
+.dashboard-card .card-header h6 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.dashboard-card .card-body {
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 0;
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+#productFilterModal .modal-body, #allActivitiesModal .modal-body {
+    max-height: 50vh;
+    overflow-y: auto;
+}
+.activity-list {
+    height: 100%;
+    overflow-y: auto;
+    border-radius: .375rem;
+    border: 1px solid #dee2e6;
+    background-color: #fafafa;
+}
+
+.activity-item {
+    padding: 0.35rem;
+    border-bottom: 1px solid #eee;
+}
+
+.filter-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid rgb(177, 176, 176);
+}
+
+.profiles-at-risk-btn {
+    background-color: white;
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: rgba(174, 68, 72);
+    border: 1px solid rgba(174, 68, 72, 0.5);
+    font-weight: 500;
+}
+
+.profiles-at-risk-btn:hover {
+    background-color: #f8f9fa;
+    color: rgba(174, 68, 72);
+}

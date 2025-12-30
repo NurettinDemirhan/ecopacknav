@@ -1,0 +1,713 @@
+.products-page-shell{
+    background-color: rgba(252, 253, 248);
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+
+.products-page-header{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    height: 7%;
+    padding: 0.5rem;
+}
+
+.products-page-header-text{
+    margin: 0;
+    line-height: 1;
+    font-weight: 600;
+    
+}
+
+.head-soon{
+    font-size: 0.75rem;        /* küçük */
+    font-weight: 600;
+    color: #b5b5b5;
+    margin-left: 0.25rem;
+
+    position: relative;
+    top: -0.6rem;              /* 👈 yukarı kaydıran asıl şey */
+}
+
+
+.shade-out{
+    color:rgb(165, 165, 165);
+}
+
+.products-page-top-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+    height: 50%;
+    min-height: 50%;
+    max-height: 50%;
+
+}
+
+
+.product-list{
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 49%;
+    min-width: 49%;
+    max-height: 100%;
+    min-height: 100%;
+    border: 1px solid rgb(177, 176, 176);
+}
+
+.product-list-head{
+  flex-shrink: 0;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  
+}
+
+.product-list-body{
+  flex: 1;                 /* kalan alan */
+  overflow-y: auto;        /* ✅ sadece body scroll */
+  overflow-x: hidden;
+  padding-right: 0.25rem;
+}
+.product-list-header{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    
+    /* margin-bottom: 0.75rem; */
+}
+.product-list-header-text{
+    margin: 0;
+    margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.product-list-header-link{
+    text-decoration: none;
+    color: #222;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    transform: translateY(-3px);
+    background: transparent;
+    border: none;
+    font-weight: 300;
+}
+.product-list-header-link:hover {
+    color: #000;
+}
+
+/* TABLE */
+.product-list-table{
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;               /* header’dan kalan alanı doldur */
+    padding-right: 0.25rem;
+    min-height: 0;
+
+}
+.product-list-body::-webkit-scrollbar{
+    width: 6px;
+}
+
+.product-list-body::-webkit-scrollbar-thumb{
+    background: #cfcfcf;
+    border-radius: 6px;
+}
+
+.product-list-body::-webkit-scrollbar-track{
+    background: transparent;
+}
+.product-list-row{
+    display: grid;
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    font-size: 1.2rem;
+}
+
+.product-list-row-products {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    text-align: center;
+}
+
+.product-list-row-partners {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    text-align: center;
+}
+
+.product-list-row:hover{
+    background: #f3f3f3;
+    cursor: pointer;
+}
+
+/* HEADER ROW */
+.product-list-row--head{
+    font-weight: 600;
+    color: #555;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 0;
+    margin-bottom: 0.25rem;
+    padding-right: 1rem;
+}
+
+.sortable-header {
+    white-space: nowrap;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+/* STATUS TEXT */
+.status-complete{
+    color: #3aa76d;
+    font-weight: 500;
+}
+
+.status-warning{
+    color: #c08a00;
+    font-weight: 500;
+}
+
+.status-danger{
+    color: #c0392b;
+    font-weight: 500;
+}
+
+/* GRADES */
+.grade{
+    font-weight: 600;
+}
+
+.grade-a{ color: #3aa76d; }
+.grade-b{ color: #d4a017; }
+.grade-c{ color: #e67e22; }
+.grade-d{ color: #c0392b; }
+
+/* ARROW */
+.row-arrow{
+    text-align: right;
+    font-size: 1.1rem;
+    color: #888;
+}
+
+.product-status{
+  max-width: 49%;
+  min-width: 49%;
+  min-height: 100%;
+  max-height: 100%;
+  display: flex;
+}
+
+.product-status-card{
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* header */
+.product-status-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.product-status-title{
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+.product-status-expand{
+  text-decoration: none;
+  color: #333;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  border-radius: 8px;
+}
+.product-status-expand:hover{
+  background: #f2f2f2;
+}
+
+/* summary */
+.status-summary{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.status-pill{
+  border: 1px solid #cfcfcf;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.status-pill-label{
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.status-pill-value{
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.status-pill-number{
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #222;
+}
+
+.status-pill-delta{
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #8a8a8a;
+}
+.status-pill-delta.up{ color: #6f6f6f; }
+.status-pill-delta.down{ color: #9a9a9a; }
+
+/* subtle backgrounds like the mock */
+.status-pill-risk{ background: #fbf2e6; }
+.status-pill-incomplete{ background: #f4f5ea; }
+.status-pill-compliant{ background: #e9f5e9; }
+
+/* table */
+.status-table{
+  border-top: 1px solid #e0e0e0;
+  /* padding-top: 0.6rem; */
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-height: 0;
+  
+}
+
+.status-row{
+  display: grid;
+  grid-template-columns: 1.8fr 0.6fr 0.6fr;
+  align-items: center;
+  padding: 0.13rem;
+  border-bottom: 1px solid #ededed;
+  font-size: 1.2rem;
+}
+
+.status-row-head{
+  font-weight: 700;
+  border-bottom: 1px solid #dcdcdc;
+  /* padding-bottom: 0.35rem;
+  margin-bottom: 0.2rem; */
+}
+
+.center{ text-align: center; }
+.right{ text-align: right; }
+
+.status-view{
+  color: #222;
+  text-decoration: none;
+  font-weight: 600;
+}
+.status-view:hover{
+  text-decoration: underline;
+}
+
+
+
+
+/* BOTTOM SECTION */
+.products-page-bottom-section{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0.75rem;
+    height: 43%;
+    min-height: 43%;
+    max-height: 43%;
+  
+}
+
+/* CARD */
+.packaging-overview{
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  max-height: 100%;
+  width: 100%;
+  border: 1px solid rgb(177, 176, 176);
+}
+
+/* HEADER */
+.packaging-overview-header{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.packaging-overview-header h2{
+  margin: 0;
+}
+
+.packaging-overview-add{
+    text-decoration: none;
+    color: #222;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    transform: translateY(-3px);
+    background: transparent;
+    border: none;
+    font-weight: 300;
+}
+
+.packaging-overview-add:hover {
+    color: #000;
+}
+
+/* TABLE */
+.packaging-overview-table{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* HEAD */
+.packaging-row-head{
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+/* BODY (scrollable) */
+.packaging-overview-body{
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-gutter: stable;
+}
+
+/* ROW */
+.packaging-row{
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1.2fr 1.2fr 1.2fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.35rem 0.4rem;
+  border-bottom: 1px solid #ededed;
+  font-size: 1.2rem;
+  justify-items: center;
+}
+
+.packaging-row:hover{
+  background: #f3f3f3;
+  cursor: pointer;
+}
+
+/* ALIGN HELPERS */
+.center{ text-align: center; }
+
+/* SCROLLBAR */
+.packaging-overview-body::-webkit-scrollbar{
+  width: 6px;
+}
+.packaging-overview-body::-webkit-scrollbar-thumb{
+  background: #cfcfcf;
+  border-radius: 6px;
+}
+.packaging-overview-body::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+/* Custom styles for Product Detail Offcanvas */
+.offcanvas-custom {
+    --bs-offcanvas-width: 600px;
+    background-color: #f0f2f5; /* Light grey background for the body */
+}
+
+.offcanvas-custom .offcanvas-header {
+    background-color: #083c46; /* Matching sidebar background */
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 0 15px; /* Rounded bottom-left corner */
+}
+
+.offcanvas-custom .offcanvas-title {
+    font-size: 1.5rem; /* Larger title font */
+    font-weight: 500;
+}
+
+.offcanvas-custom .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.offcanvas-custom .offcanvas-body {
+    font-size: 1.1rem; /* Larger general font size */
+    padding: 1.5rem;
+}
+
+.offcanvas-custom .detail-section {
+    background-color: #ffffff;
+    border-radius: 12px; /* Rounded corners for item sections */
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden; /* Keeps child header corners rounded */
+}
+
+.offcanvas-custom .detail-section-header {
+    background-color: #083c46; /* Matching sidebar background */
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.offcanvas-custom .detail-section-header h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.offcanvas-custom .detail-section-body {
+    padding: 1rem 1.5rem;
+}
+
+.offcanvas-custom .detail-section-body p {
+    margin-bottom: 0.5rem;
+}
+
+.offcanvas-custom .packaging-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.offcanvas-custom .packaging-table th,
+.offcanvas-custom .packaging-table td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.offcanvas-custom .packaging-table tr:last-child td {
+    border-bottom: none;
+}
+
+.offcanvas-custom .packaging-table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#offcanvas-product-code-container {
+    padding: 1rem 1.5rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.detail-line {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.detail-line:last-child {
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+#offcanvas-product-code,
+#offcanvas-sec-product-code,
+#offcanvas-product-category {
+    font-weight: 500;
+    color: #222;
+}
+
+#offcanvas-sec-product-code,
+#offcanvas-product-category {
+    color: #6c757d;
+}
+
+/* Initially hide the extra columns */
+.extra-col {
+    display: none;
+}
+
+/* When the view is expanded */
+.products-page-top-section.product-list-expanded {
+    height: 93%; /* Take up most of the space */
+    flex-wrap: nowrap; /* Prevent wrapping */
+    justify-items: center;
+}
+
+.products-page-top-section.product-list-expanded .product-list:nth-child(2) {
+    display: none; /* Hide the partner list */
+}
+
+.products-page-top-section.product-list-expanded .product-list:nth-child(1) {
+    min-width: 100%; /* Make product list take full width */
+}
+
+.products-page-top-section.product-list-expanded .product-list-row-products {
+    /* 8 veri kolonu + 1 auto Actions kolonu */
+    grid-template-columns: repeat(8, minmax(100px, 1fr)) 120px; 
+    gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+}
+
+.products-page-top-section.product-list-expanded .extra-col {
+    display: block; /* Show the extra columns. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Hide the bottom section when expanded */
+.products-page-shell:has(.product-list-expanded) .products-page-bottom-section {
+    display: none;
+}
+.sortable-header {
+    position: relative;
+    padding: 0 15px; /* İkon için yer aç */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.sortable-header i {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    /* İsteğe bağlı: İkonu sabitlemek istersen */
+    width: 12px; 
+    display: inline-block;
+}
+.product-list-row > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 4px;
+}
+.product-list-body {
+    scrollbar-gutter: stable; /* Scroll bar olsa da olmasa da yerini ayırır, kaymayı önler */
+}
+/* 1. Varsayılan olarak ekstra kolonları gizle */
+.extra-col {
+    display: none !important; /* Diğer tanımları ezmesi için !important ekliyoruz */
+}
+
+/* 2. Sadece 'product-list-expanded' sınıfı varken göster */
+.product-list-expanded .extra-col {
+    display: block !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 3. Expand edilmemiş (normal) haldeki grid yapısını koru */
+.product-list-row-products {
+    display: grid;
+    /* Normalde 4 veri kolonu + 1 Actions kolonu var */
+    grid-template-columns: repeat(4, 1fr) auto; 
+    gap: 1rem;
+    text-align: center;
+}
+
+/* 4. Sadece expand edilmiş haldeki grid yapısını güncelle */
+.products-page-top-section.product-list-expanded .product-list-row-products {
+    display: grid;
+    /* 8 veri kolonu + 1 Actions kolonu */
+    grid-template-columns: repeat(8, minmax(0, 1fr)) 120px; 
+    gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+}
+/* products_page.css içindeki bu kısımları bulun ve değiştirin */
+
+/* 1. Normal (Expand edilmemiş) hal için grid tanımı */
+.product-list-row-products {
+    display: grid !important;
+    /* ÖNEMLİ: Sadece görünür olan 4 kolon + 1 Actions kolonu */
+    grid-template-columns: repeat(4, 1fr) 110px; 
+    gap: 0.5rem;
+    width: 100%;
+    align-items: center;
+}
+
+/* 2. Expand edilmiş hal için grid tanımı */
+.product-list-expanded .product-list-row-products {
+    /* Tüm 8 kolon + 1 Actions kolonu */
+    grid-template-columns: repeat(8, minmax(0, 1fr)) 120px !important; 
+}
+
+/* 3. Ekstra kolonların davranışı */
+.extra-col {
+    /* Normal halde grid hesaplamasına dahil olmamaları için */
+    display: none !important; 
+}
+
+.product-list-expanded .extra-col {
+    /* Expand olunca hem görünür yap hem grid hücresi olarak canlandır */
+    display: flex !important; 
+    justify-content: center;
+    align-items: center;
+}
+.product-list-row {
+    padding: 0.4rem 0.5rem; /* Satır padding'lerini eşitleyin */
+    box-sizing: border-box;
+}
+
+.product-list-row--head {
+    padding-right: 0.5rem !important; /* Header'daki fazla padding'i kaldırın */
+    border-bottom: 1px solid #e0e0e0;
+}

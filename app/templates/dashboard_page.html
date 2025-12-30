@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_page.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-2">
+    <h1 class="dashboard-page-header mb-2">Dashboard</h1>
+
+    <div class="mb-2">
+        <button type="button" class="btn profiles-at-risk-btn" data-bs-toggle="modal" data-bs-target="#productStatusModal">
+            <i class="bi bi-exclamation-circle-fill"></i> PROFILES AT RISK: 12
+        </button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card filter-card w-100 mb-2">
+        <div class="card-body">
+            <form id="filterForm" class="d-flex align-items-center flex-wrap">
+                <div class="me-3 mb-2 d-flex align-items-center">
+                    <label for="startDate" class="mb-0 me-2">From</label>
+                    <input type="month" id="startDate" name="start_date" class="form-control" value="{{ start_date or '' }}">
+                </div>
+                <div class="me-3 mb-2 d-flex align-items-center">
+                    <label for="endDate" class="mb-0 me-2">Until</label>
+                    <input type="month" id="endDate" name="end_date" class="form-control" value="{{ end_date or '' }}">
+                </div>
+                {% for product_id in request.args.getlist('product_ids') %}
+                <input type="hidden" name="product_ids" value="{{ product_id }}">
+                {% endfor %}
+                
+                <button type="button" class="btn btn-primary mt-auto mb-2" data-bs-toggle="modal" data-bs-target="#productFilterModal">
+                    Filter by Product
+                </button>
+                <div class="ms-3 mb-2 d-flex align-items-center">
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" value="Primary" id="primaryCheck" name="packaging_levels" {% if 'packaging_levels' not in request.args or 'Primary' in request.args.getlist('packaging_levels') %}checked{% endif %}>
+                        <label class="form-check-label" for="primaryCheck">
+                            Primary
+                        </label>
+                    </div>
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" value="Secondary" id="secondaryCheck" name="packaging_levels" {% if 'packaging_levels' not in request.args or 'Secondary' in request.args.getlist('packaging_levels') %}checked{% endif %}>
+                        <label class="form-check-label" for="secondaryCheck">
+                            Secondary
+                        </label>
+                    </div>
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" value="Tertiary" id="tertiaryCheck" name="packaging_levels" {% if 'packaging_levels' not in request.args or 'Tertiary' in request.args.getlist('packaging_levels') %}checked{% endif %}>
+                        <label class="form-check-label" for="tertiaryCheck">
+                            Tertiary
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-auto me-2 mb-2">Apply Filters</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row g-2">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="dashboard-card shadow-sm">
+                        <div class="card-header"><h6 class="mb-0">Monthly Packaging Quantity</h6></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="packagingTrendChart"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-12">
+                     <div class="dashboard-card shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Latest Activities</h6>
+                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#allActivitiesModal">
+                                Expand <i class="bi bi-arrows-angle-expand"></i>
+                            </button>
+                        </div>
+                        <div class="card-body p-0">
+                            {% if latest_activities %}
+                            <div class="list-group activity-list">
+                                {% for activity in latest_activities %}
+                                <div class="list-group-item activity-item">
+                                    <div class="d-flex w-100 justify-content-start align-items-center">
+                                        <i class="bi {{ get_activity_icon(activity.type) }} me-3"></i>
+                                        <div class="flex-grow-1">
+                                            <p class="mb-1">{{ activity.description }}</p>
+                                            <small class="text-muted">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-center p-4">No recent activities found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="dashboard-card shadow-sm">
+                        <div class="card-header"><h6 class="mb-0">Packaging by Quantity</h6></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="packagingQtyChart"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="dashboard-card shadow-sm">
+                        <div class="card-header"><h6 class="mb-0">Packaging by Weight (kg)</h6></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="packagingWeightChart"></canvas></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Filter Modal -->
+<div class="modal fade" id="productFilterModal" tabindex="-1" aria-labelledby="productFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productFilterModalLabel">Filter by Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="productFilterForm" action="{{ url_for('main.dashboard') }}" method="GET">
+                    <input type="hidden" name="start_date" value="{{ request.args.get('start_date', '') }}">
+                    <input type="hidden" name="end_date" value="{{ request.args.get('end_date', '') }}">
+
+                    <div class="mb-3">
+                        <input type="search" class="form-control" id="productSearchInput" placeholder="Search products...">
+                    </div>
+                    <ul class="list-group" id="product-filter-list">
+                        {% if products %}
+                            {% for product in products %}
+                            <li class="list-group-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="product_ids" value="{{ product._id }}" id="product_{{ product._id }}"
+                                        {% if product._id|string in request.args.getlist('product_ids') %}checked{% endif %}>
+                                    <label class="form-check-label" for="product_{{ product._id }}">
+                                        {{ product.product_code }}
+                                    </label>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item">No products found.</li>
+                        {% endif %}
+                    </ul>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="productFilterForm">Apply Filter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- All Activities Modal -->
+<div class="modal fade" id="allActivitiesModal" tabindex="-1" aria-labelledby="allActivitiesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="allActivitiesModalLabel">All Recent Activities</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="all-activities-list">
+                    <li class="list-group-item">Loading...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script>
+// Same script as before
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof Chart === 'undefined') return;
+    Chart.register(ChartDataLabels);
+
+    const qtyData = {{ packaging_qty_by_grade | tojson }};
+    const weightData = {{ packaging_weight_by_grade | tojson }};
+    const trendData = {{ packaging_trend | tojson }};
+    const gradeColors = { 'A': 'rgba(71, 135, 108)', 'B': 'rgba(228, 196, 113)', 'C': 'rgba(205, 137, 66)', 'D': 'rgba(174, 68, 72)' };
+
+    const pieChartOptions = () => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: { display: false },
+            legend: { position: 'bottom' },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label || '';
+                        let value = context.parsed;
+                        let unit = context.chart.canvas.id.includes('Weight') ? 'kg' : 'units';
+                        return `${label}: ${value.toLocaleString()} ${unit}`;
+                    }
+                }
+            },
+            datalabels: {
+                formatter: (value, ctx) => {
+                    const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                    return total > 0 ? (value / total * 100).toFixed(1) + '%' : '';
+                },
+                color: '#fff',
+                font: { weight: 'bold' }
+            }
+        }
+    });
+
+    const qtyCtx = document.getElementById('packagingQtyChart');
+    if (qtyCtx) {
+        if (Object.values(qtyData).reduce((a, b) => a + b, 0) > 0) { new Chart(qtyCtx, { type: 'doughnut', data: { labels: Object.keys(qtyData), datasets: [{ data: Object.values(qtyData), backgroundColor: Object.keys(qtyData).map(label => gradeColors[label]) }] }, options: pieChartOptions() }); }
+        else { qtyCtx.closest('.chart-container').innerHTML = '<div class="text-center p-3">No data</div>'; }
+    }
+
+    const weightCtx = document.getElementById('packagingWeightChart');
+    if (weightCtx) {
+        if (Object.values(weightData).reduce((a, b) => a + b, 0) > 0) { new Chart(weightCtx, { type: 'doughnut', data: { labels: Object.keys(weightData), datasets: [{ data: Object.values(weightData), backgroundColor: Object.keys(weightData).map(label => gradeColors[label]) }] }, options: pieChartOptions() }); }
+        else { weightCtx.closest('.chart-container').innerHTML = '<div class="text-center p-3">No data</div>'; }
+    }
+
+    const trendCtx = document.getElementById('packagingTrendChart');
+    if (trendCtx && Object.keys(trendData).length > 0) {
+        const labels = Object.keys(trendData);
+        const grades = ['A', 'B', 'C', 'D'];
+        const datasets = grades.map(grade => ({
+            type: 'bar',
+            label: `Grade ${grade}`,
+            data: labels.map(label => trendData[label][grade] || 0),
+            backgroundColor: gradeColors[grade],
+        }));
+        datasets.push({ type: 'line', label: 'Total', data: labels.map(label => grades.reduce((sum, grade) => sum + (trendData[label][grade] || 0), 0)), borderColor: '#36A2EB', fill: false });
+
+        new Chart(trendCtx, {
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: false },
+                    tooltip: { mode: 'index', intersect: false },
+                    legend: { position: 'bottom' },
+                    datalabels: { display: false }
+                },
+                scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Quantity (units)' } } }
+            }
+        });
+    } else if (trendCtx) {
+        trendCtx.closest('.chart-container').innerHTML = '<div class="text-center p-3">No trend data</div>';
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('productSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            const productList = document.getElementById('product-filter-list');
+            const items = productList.getElementsByTagName('li');
+            for (let i = 0; i < items.length; i++) {
+                const label = items[i].getElementsByTagName('label')[0];
+                if (label) {
+                    const text = label.textContent || label.innerText;
+                    if (text.toLowerCase().indexOf(filter) > -1) {
+                        items[i].style.display = '';
+                    } else {
+                        items[i].style.display = 'none';
+                    }
+                }
+            }
+        });
+    }
+
+    const allActivitiesModal = document.getElementById('allActivitiesModal');
+    if (allActivitiesModal) {
+        allActivitiesModal.addEventListener('show.bs.modal', function () {
+            const list = document.getElementById('all-activities-list');
+            list.innerHTML = '<li class="list-group-item">Loading...</li>'; // Reset on open
+
+            const getActivityIcon = (activityType) => {
+                if (typeof activityType !== 'string') return "bi-info-circle";
+                if (activityType.includes("product")) return "bi-qr-code";
+                if (activityType.includes("packaging")) return "bi-box";
+                if (activityType.includes("partner")) return "bi-person";
+                if (activityType.includes("connection")) return "bi-arrows-h";
+                if (activityType.includes("sales")) return "bi-cash-coin";
+                return "bi-info-circle";
+            };
+
+            fetch("{{ url_for('main.get_activities') }}")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(activities => {
+                    list.innerHTML = ''; // Clear loading indicator
+                    if (activities && activities.length > 0) {
+                        activities.forEach(activity => {
+                            const item = document.createElement('li');
+                            item.className = 'list-group-item';
+
+                            const iconClass = getActivityIcon(activity.type);
+
+                            const innerHtml = `
+                                <div class="d-flex w-100 justify-content-start align-items-center">
+                                    <i class="bi ${iconClass} me-3"></i>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-1">${activity.description}</p>
+                                        <small class="text-muted">${new Date(activity.timestamp).toLocaleString()}</small>
+                                    </div>
+                                </div>
+                            `;
+
+                            item.innerHTML = innerHtml;
+                            list.appendChild(item);
+                        });
+                    } else {
+                        list.innerHTML = '<li class="list-group-item">No activities found.</li>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching activities:', error);
+                    list.innerHTML = '<li class="list-group-item text-danger">Failed to load activities.</li>';
+                });
+        });
+    }
+});
+</script>
+{% endblock %}

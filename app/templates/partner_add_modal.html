@@ -1,0 +1,73 @@
+<!-- Modal -->
+<div class="modal fade" id="addPartnerModal" tabindex="-1" aria-labelledby="addPartnerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPartnerModalLabel">Add New Partner</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ url_for('main.add_partner') }}" novalidate id="addPartnerForm">
+          <!-- Partner Type -->
+          <div class="mb-3">
+            <label for="partnerType" class="form-label">Partner Type <span class="text-danger">*</span></label>
+            <select class="form-select" id="partnerType" name="partner_type" required>
+              <option value="">-- Select --</option>
+              <option value="supplier">Supplier</option>
+              <option value="customer">Customer</option>
+            </select>
+            <div class="invalid-feedback">Please select a partner type.</div>
+          </div>
+
+          <!-- Partner Name -->
+          <div class="mb-3">
+            <label for="partnerName" class="form-label">Partner Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="partnerName" name="partner_name" required>
+            <div class="invalid-feedback">Please provide a partner name.</div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email">
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="phoneNumber" name="phone_number">
+          </div>
+
+          <!-- Address -->
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+          </div>
+
+          <!-- Country -->
+          <div class="mb-3">
+            <label for="country" class="form-label">Country</label>
+            <input type="text" class="form-control" id="country" name="country">
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" id="partnerSubmitBtn">Add Partner</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('addPartnerForm').addEventListener('submit', function(event) {
+    const form = event.target;
+    if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    form.classList.add('was-validated');
+}, false);
+</script>
