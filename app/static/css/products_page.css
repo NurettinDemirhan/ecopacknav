@@ -147,7 +147,7 @@
 }
 
 .product-list-row-partners {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr) auto;
     gap: 1rem;
     text-align: center;
 }
@@ -434,7 +434,7 @@
   padding: 0.35rem 0.4rem;
   border-bottom: 1px solid #ededed;
   font-size: 1.2rem;
-  justify-items: center;
+  text-align: center;
 }
 
 .packaging-row:hover{
@@ -552,6 +552,7 @@
     align-items: center;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
+    gap: 0.5rem;
 }
 
 .detail-line:last-child {
@@ -585,6 +586,7 @@
 /* When the view is expanded */
 .products-page-top-section.product-list-expanded {
     height: 93%; /* Take up most of the space */
+    max-height: 93%;
     flex-wrap: nowrap; /* Prevent wrapping */
     justify-items: center;
 }
@@ -643,12 +645,12 @@
 }
 /* 1. Varsayılan olarak ekstra kolonları gizle */
 .extra-col {
-    display: none !important; /* Diğer tanımları ezmesi için !important ekliyoruz */
+    display: none;
 }
 
 /* 2. Sadece 'product-list-expanded' sınıfı varken göster */
 .product-list-expanded .extra-col {
-    display: block !important;
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -676,7 +678,7 @@
 
 /* 1. Normal (Expand edilmemiş) hal için grid tanımı */
 .product-list-row-products {
-    display: grid !important;
+    display: grid;
     /* ÖNEMLİ: Sadece görünür olan 4 kolon + 1 Actions kolonu */
     grid-template-columns: repeat(4, 1fr) 110px; 
     gap: 0.5rem;
@@ -687,18 +689,18 @@
 /* 2. Expand edilmiş hal için grid tanımı */
 .product-list-expanded .product-list-row-products {
     /* Tüm 8 kolon + 1 Actions kolonu */
-    grid-template-columns: repeat(8, minmax(0, 1fr)) 120px !important; 
+    grid-template-columns: repeat(8, minmax(0, 1fr)) 120px; 
 }
 
 /* 3. Ekstra kolonların davranışı */
 .extra-col {
     /* Normal halde grid hesaplamasına dahil olmamaları için */
-    display: none !important; 
+    display: none; 
 }
 
 .product-list-expanded .extra-col {
     /* Expand olunca hem görünür yap hem grid hücresi olarak canlandır */
-    display: flex !important; 
+    display: flex; 
     justify-content: center;
     align-items: center;
 }
@@ -708,6 +710,63 @@
 }
 
 .product-list-row--head {
-    padding-right: 0.5rem !important; /* Header'daki fazla padding'i kaldırın */
+    padding-right: 0.5rem; /* Header'daki fazla padding'i kaldırın */
     border-bottom: 1px solid #e0e0e0;
+}
+
+/* --- Packaging List Expanded View --- */
+
+/* When packaging is expanded, hide the top section */
+.products-page-shell.packaging-list-expanded .products-page-top-section {
+    display: none;
+}
+
+/* Make the bottom section fill the height */
+.products-page-shell.packaging-list-expanded .products-page-bottom-section {
+    height: 93%;
+    max-height: 93%;
+    padding: 0; /* Remove padding to make the card truly full-width */
+}
+
+/* Make the packaging card fill its container */
+.products-page-shell.packaging-list-expanded .packaging-overview {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    max-height: 100%;
+}
+/* --- Partner List Expanded View --- */
+
+/* When partner list is expanded, hide the product list */
+.products-page-top-section.partner-list-expanded .product-list:nth-child(1) {
+    display: none;
+}
+
+/* Make the partner list take full width */
+.products-page-top-section.partner-list-expanded .product-list:nth-child(2) {
+    min-width: 100%;
+}
+
+/* Adjust grid for the new columns in the expanded partner list */
+.products-page-top-section.partner-list-expanded .product-list-row-partners {
+    grid-template-columns: repeat(7, 1fr) auto;
+}
+
+/* Show extra columns in the expanded partner list */
+.products-page-top-section.partner-list-expanded .extra-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Also hide the bottom section when the top section is expanded */
+.products-page-shell:has(.partner-list-expanded) .products-page-bottom-section {
+    display: none;
+}
+
+/* And apply the height expansion */
+.products-page-top-section.partner-list-expanded {
+    height: 93%;
+    max-height: 93%;
 }

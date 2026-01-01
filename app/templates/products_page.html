@@ -46,14 +46,20 @@
                 </div>
 
                 <!-- ROW -->
-                <div class="product-list-body">
+                <div class="product-list-body" id="product-list-body">
                     {% for product in products %}
                         <div class="product-list-row product-row-clickable product-list-row-products" data-product-id="{{ product._id }}">
                         <div>{{ product.product_code }}</div>
                         <div class="{{ '' if product.secondary_product_code else 'text-muted' }}">{{ product.secondary_product_code or '—' }}</div>
                         <div>{{ product.product_category or '—' }}</div>
                         <div style="color: {{ product.packaging_status_color }}; font-weight: 500;">{{ product.packaging_status }}</div>
-                        <div class="extra-col" title="{{ product.product_description or '' }}">{{ product.product_description or '—' }}</div>
+                        <div class="extra-col">
+                            {% if product.product_description %}
+                                <i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ product.product_description }}"></i>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
                         <div class="extra-col">{{ product.product_material or '—' }}</div>
                         <div class="extra-col">{{ product.product_shape or '—' }}</div>
                         <div class="extra-col">
@@ -117,6 +123,7 @@
                     <button type="button" class="product-list-header-link" data-bs-toggle="modal" data-bs-target="#addPartnerModal">+</button>
                 </div>
                 <input type="text" id="partnerSearch" class="form-control" placeholder="Search Partners..." style="width: 250px; margin-left: auto;">
+                <button type="button" id="expandPartnerListBtn" class="btn btn-outline-secondary ms-2" title="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
             </div>
 
             <div class="product-list-table">
@@ -128,6 +135,9 @@
                         <div class="sortable-header" data-column-index="1">Type <i class="bi bi-arrow-down-up"></i></div>
                         <div class="sortable-header" data-column-index="2">Country <i class="bi bi-arrow-down-up"></i></div>
                         <div class="sortable-header" data-column-index="3">Linked Items <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="4">Email <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="5">Phone <i class="bi bi-arrow-down-up"></i></div>
+                        <div class="extra-col sortable-header" data-column-index="6">Address <i class="bi bi-arrow-down-up"></i></div>
                         <div>Actions</div>
                     </div>
                 </div>
@@ -140,6 +150,27 @@
                             <div>{{ partner.partner_type or '—' }}</div>
                             <div>{{ partner.country or '—' }}</div>
                             <div>{{ partner.connections|length }}</div>
+                            <div class="extra-col">
+                                {% if partner.email %}
+                                    <i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ partner.email }}"></i>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                            <div class="extra-col">
+                                {% if partner.phone_number %}
+                                    <i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ partner.phone_number }}"></i>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                            <div class="extra-col">
+                                {% if partner.address %}
+                                    <i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ partner.address }}"></i>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
                             <div class="cell" style="display: flex; gap: 0.3rem; align-items: center; justify-content: center;">
                                 <button
                                     class="btn btn-sm btn-outline-secondary edit-partner-btn"
@@ -193,11 +224,11 @@
 
             <!-- HEAD -->
             <div class="packaging-row packaging-row-head" id="packaging-list-header">
-                <div class="sortable-header" data-column-index="0">Packaging <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header" data-column-index="1">Level <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header" data-column-index="2">Component Type <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header" data-column-index="3">Material <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header" data-column-index="4">Supplier <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="0">Packaging <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="1">Level <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="2">Comp. Type <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="3">Material <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="4">Supplier <i class="bi bi-arrow-down-up"></i></div>
                 <div class="sortable-header center" data-column-index="5">Products Using <i class="bi bi-arrow-down-up"></i></div>
                 <div class="sortable-header center" data-column-index="6">Recyclability <i class="bi bi-arrow-down-up"></i></div>
                 <div>Actions</div>
@@ -208,25 +239,25 @@
                 {% if packaging_rows %}
                     {% for row in packaging_rows %}
                     <div class="packaging-row packaging-row-clickable" data-package-id="{{ row._id }}" data-package-level="{{ row.level }}">
-                        <div>{{ row.package_code }}</div>
-                        <div>{{ row.level }}</div>
-                        <div>{{ row.component_type or '—' }}</div>
-                        <div>{{ row.material }}</div>
-                        <div>{{ row.supplier }}</div>
+                        <div class="center">{{ row.package_code }}</div>
+                        <div class="center">{{ row.level }}</div>
+                        <div class="center">{{ row.component_type or '—' }}</div>
+                        <div class="center">{{ row.material }}</div>
+                        <div class="center">{{ row.supplier }}</div>
                         <div class="center">{{ row.products_using }}</div>
 
                         {# recyclability grade görünümü #}
                         {% set g = (row.recyclability|string)|upper %}
                         {% if g.startswith('A') %}
-                        <div class="grade grade-a">A</div>
+                        <div class="grade grade-a center">A</div>
                         {% elif g.startswith('B') %}
-                        <div class="grade grade-b">B</div>
+                        <div class="grade grade-b center">B</div>
                         {% elif g.startswith('C') %}
-                        <div class="grade grade-c">C</div>
+                        <div class="grade grade-c center">C</div>
                         {% elif g.startswith('D') %}
-                        <div class="grade grade-d">D</div>
+                        <div class="grade grade-d center">D</div>
                         {% else %}
-                        <div class="grade">—</div>
+                        <div class="grade center">—</div>
                         {% endif %}
 
                         <div class="cell" style="display: flex; gap: 0.3rem; align-items: center; justify-content: center;">
@@ -280,6 +311,18 @@
         <div id="offcanvas-packaging-code-container">
             <h3 id="offcanvas-packaging-code"></h3>
             <p id="offcanvas-packaging-level" class="text-muted"></p>
+            <div class="detail-line">
+                <span class="detail-label">Component:</span>
+                <span id="offcanvas-packaging-component"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Material:</span>
+                <span id="offcanvas-packaging-material"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Recyclability:</span>
+                <span id="offcanvas-packaging-recyclability"></span>
+            </div>
         </div>
         <div class="detail-section">
             <div class="detail-section-header">
@@ -325,6 +368,10 @@
             <div class="detail-line">
                 <span class="detail-label">Category:</span>
                 <span id="offcanvas-product-category"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Description:</span>
+                <span id="offcanvas-product-description"></span>
             </div>
         </div>
         <div class="detail-section">
@@ -378,6 +425,9 @@
 <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
     // Offcanvas for Product Details
     const productDetailOffcanvas = new bootstrap.Offcanvas(document.getElementById('productDetailOffcanvas'));
     document.querySelectorAll('.product-row-clickable').forEach(row => {
@@ -389,6 +439,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('offcanvas-product-code').textContent = data.product_code || '—';
                     document.getElementById('offcanvas-sec-product-code').textContent = data.secondary_product_code || '—';
                     document.getElementById('offcanvas-product-category').textContent = data.product_category || '—';
+                    document.getElementById('offcanvas-product-description').textContent = data.product_description || '—';
                     const packagingTableBody = document.getElementById('offcanvas-packaging-table-body');
                     packagingTableBody.innerHTML = '';
                     if (data.connections.packaging && data.connections.packaging.length > 0) {
@@ -419,6 +470,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data) {
                     document.getElementById('offcanvas-packaging-code').textContent = data.package_code || '—';
                     document.getElementById('offcanvas-packaging-level').textContent = data.level || '—';
+                    document.getElementById('offcanvas-packaging-component').textContent = data.component_type || '—';
+                    document.getElementById('offcanvas-packaging-material').textContent = data.material || '—';
+                    const recyclabilitySpan = document.getElementById('offcanvas-packaging-recyclability');
+                    const gradeValue = data.recyclability || '—';
+                    recyclabilitySpan.textContent = gradeValue;
+                    recyclabilitySpan.className = ''; // Reset classes
+                    if (gradeValue && gradeValue !== '—') {
+                        const gradeLetter = gradeValue.charAt(0).toUpperCase();
+                        if (['A', 'B', 'C', 'D'].includes(gradeLetter)) {
+                            recyclabilitySpan.classList.add('grade', `grade-${gradeLetter.toLowerCase()}`);
+                        }
+                    }
                     const linkedProductsList = document.getElementById('offcanvas-linked-products-list');
                     linkedProductsList.innerHTML = '';
                     if (data.linked_products && data.linked_products.length > 0) {
@@ -751,38 +814,54 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const expandBtn = document.getElementById('expandProductListBtn');
-    if (expandBtn) {
-        const topSection = document.querySelector('.products-page-top-section');
-        const icon = expandBtn.querySelector('i');
+    const expandButtons = {
+        'expandProductListBtn': {
+            target: document.querySelector('.products-page-top-section'),
+            className: 'product-list-expanded'
+        },
+        'expandPartnerListBtn': {
+            target: document.querySelector('.products-page-top-section'),
+            className: 'partner-list-expanded'
+        },
+        'expandPackagingListBtn': {
+            target: document.querySelector('.products-page-shell'),
+            className: 'packaging-list-expanded'
+        }
+    };
 
-        expandBtn.addEventListener('click', function() {
-            topSection.classList.toggle('product-list-expanded');
+    const allTargets = [...new Set(Object.values(expandButtons).map(b => b.target).filter(t => t))];
+    const allClassNames = Object.values(expandButtons).map(b => b.className);
 
-            if (topSection.classList.contains('product-list-expanded')) {
-                icon.className = 'bi bi-arrows-angle-contract';
-                expandBtn.title = 'Collapse';
-            } else {
-                icon.className = 'bi bi-arrows-angle-expand';
-                expandBtn.title = 'Expand';
-            }
-        });
-    }
+    for (const buttonId in expandButtons) {
+        const button = document.getElementById(buttonId);
+        if (!button) continue;
 
-    const expandPackagingBtn = document.getElementById('expandPackagingListBtn');
-    if (expandPackagingBtn) {
-        const shell = document.querySelector('.products-page-shell');
-        const icon = expandPackagingBtn.querySelector('i');
+        const { target, className } = expandButtons[buttonId];
+        if(!target) continue;
 
-        expandPackagingBtn.addEventListener('click', function() {
-            shell.classList.toggle('packaging-list-expanded');
+        button.addEventListener('click', function() {
+            const isExpanding = !target.classList.contains(className);
+            
+            // 1. Reset all states
+            allTargets.forEach(t => {
+                allClassNames.forEach(c => t.classList.remove(c));
+            });
+            document.querySelectorAll('[id^="expand"][id$="Btn"]').forEach(btn => {
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = 'bi bi-arrows-angle-expand';
+                }
+                btn.title = 'Expand';
+            });
 
-            if (shell.classList.contains('packaging-list-expanded')) {
-                icon.className = 'bi bi-arrows-angle-contract';
-                expandPackagingBtn.title = 'Collapse';
-            } else {
-                icon.className = 'bi bi-arrows-angle-expand';
-                expandPackagingBtn.title = 'Expand';
+            // 2. Apply new state if we are expanding
+            if (isExpanding) {
+                target.classList.add(className);
+                const clickedIcon = button.querySelector('i');
+                if (clickedIcon) {
+                    clickedIcon.className = 'bi bi-arrows-angle-contract';
+                }
+                button.title = 'Collapse';
             }
         });
     }

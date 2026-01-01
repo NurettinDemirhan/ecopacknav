@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (productSearch) {
         productSearch.addEventListener('keyup', function () {
             let filter = productSearch.value.toUpperCase();
-            let productList = document.querySelector('.product-list-body');
-            let rows = productList.getElementsByClassName('product-list-row');
+            let productList = document.getElementById('product-list-body');
+            let rows = productList.querySelectorAll('.product-list-row');
 
             for (let i = 0; i < rows.length; i++) {
-                let cells = rows[i].getElementsByTagName('div');
+                let cells = rows[i].children;
                 let match = false;
                 for (let j = 0; j < cells.length; j++) {
                     if (cells[j]) {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
                 if (match) {
-                    rows[i].style.display = "grid";
+                    rows[i].style.display = "";
                 } else {
                     rows[i].style.display = "none";
                 }
@@ -30,11 +30,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (packagingSearch) {
         packagingSearch.addEventListener('keyup', function () {
             let filter = packagingSearch.value.toUpperCase();
-            let packagingList = document.querySelector('.packaging-overview-body');
-            let rows = packagingList.getElementsByClassName('packaging-row');
+            let packagingList = document.getElementById('packaging-list-body');
+            let rows = packagingList.querySelectorAll('.packaging-row');
 
             for (let i = 0; i < rows.length; i++) {
-                let cells = rows[i].getElementsByTagName('div');
+                let cells = rows[i].children;
                 let match = false;
                 for (let j = 0; j < cells.length; j++) {
                     if (cells[j]) {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
                 if (match) {
-                    rows[i].style.display = "grid";
+                    rows[i].style.display = "";
                 } else {
                     rows[i].style.display = "none";
                 }
@@ -58,10 +58,10 @@ document.addEventListener('DOMContentLoaded', function () {
         partnerSearch.addEventListener('keyup', function () {
             let filter = partnerSearch.value.toUpperCase();
             let partnerList = document.getElementById('partner-list-body');
-            let rows = partnerList.getElementsByClassName('product-list-row');
+            let rows = partnerList.querySelectorAll('.product-list-row');
 
             for (let i = 0; i < rows.length; i++) {
-                let cells = rows[i].getElementsByTagName('div');
+                let cells = rows[i].children;
                 let match = false;
                 for (let j = 0; j < cells.length; j++) {
                     if (cells[j]) {
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
                 if (match) {
-                    rows[i].style.display = "grid";
+                    rows[i].style.display = "";
                 } else {
                     rows[i].style.display = "none";
                 }

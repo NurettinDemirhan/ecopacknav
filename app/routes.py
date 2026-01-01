@@ -94,6 +94,47 @@ def login():
     return render_template("login_page.html", login_form=login_form)
 
 
+def pick_material_text(pkg: dict) -> str:
+    """
+    materials array varsa içinden material adlarını birleştir.
+    Yoksa pkg['material'] veya pkg['materials'] string gibi alanlara düş.
+    """
+    mats = pkg.get("materials")
+    if isinstance(mats, list) and mats:
+        names = []
+        for m in mats:
+            if isinstance(m, dict):
+                val = (m.get("material") or m.get("material_type") or m.get("plastic_type") or "").strip()
+                if val:
+                    names.append(val)
+            elif isinstance(m, str) and m.strip():
+                names.append(m.strip())
+        # uniq + kısa
+        uniq = []
+        for n in names:
+            if n not in uniq:
+                uniq.append(n)
+        return ", ".join(uniq[:3]) if uniq else "—"
+
+    return (pkg.get("material") or "—")
+
+def pick_component_type_text(pkg: dict) -> str:
+    mats = pkg.get("materials")
+    if isinstance(mats, list) and mats:
+        names = []
+        for m in mats:
+            if isinstance(m, dict):
+                val = (m.get("package_component") or "").strip()
+                if val:
+                    names.append(val)
+        # Get unique component types
+        uniq = []
+        for n in names:
+            if n not in uniq:
+                uniq.append(n)
+        return ", ".join(uniq[:3]) if uniq else "—"
+    return "—"
+
 @main_bp.get("/products")
 @login_required
 def products():
@@ -103,7 +144,7 @@ def products():
     products = list(
         mongo.db.products.find(
             {"owner": user_oid},
-            {"product_code": 1, "secondary_product_code": 1, "connections": 1, "product_category": 1, "product_material": 1, "product_shape": 1, "volume_cm3": 1, "product_volume": 1}
+            {"product_code": 1, "secondary_product_code": 1, "connections": 1, "product_category": 1, "product_description": 1, "product_material": 1, "product_shape": 1, "volume_cm3": 1, "product_volume": 1}
         ).sort("product_code", 1)
     )
 
@@ -135,51 +176,10 @@ def products():
     partners = list(mongo.db.partners.find({"owner": user_oid}))
     supplier_map = {str(p["_id"]): p.get("partner_name", "Unknown") for p in partners}
 
-    def pick_material_text(pkg: dict) -> str:
-        """
-        materials array varsa içinden material adlarını birleştir.
-        Yoksa pkg['material'] veya pkg['materials'] string gibi alanlara düş.
-        """
-        mats = pkg.get("materials")
-        if isinstance(mats, list) and mats:
-            names = []
-            for m in mats:
-                if isinstance(m, dict):
-                    val = (m.get("material") or m.get("material_type") or m.get("plastic_type") or "").strip()
-                    if val:
-                        names.append(val)
-                elif isinstance(m, str) and m.strip():
-                    names.append(m.strip())
-            # uniq + kısa
-            uniq = []
-            for n in names:
-                if n not in uniq:
-                    uniq.append(n)
-            return ", ".join(uniq[:3]) if uniq else "—"
-
-        return (pkg.get("material") or "—")
-
     def pick_supplier_text(pkg: dict) -> str:
         supplier_id = pkg.get("supplier")
         if supplier_id and str(supplier_id) in supplier_map:
             return supplier_map[str(supplier_id)]
-        return "—"
-
-    def pick_component_type_text(pkg: dict) -> str:
-        mats = pkg.get("materials")
-        if isinstance(mats, list) and mats:
-            names = []
-            for m in mats:
-                if isinstance(m, dict):
-                    val = (m.get("package_component") or "").strip()
-                    if val:
-                        names.append(val)
-            # Get unique component types
-            uniq = []
-            for n in names:
-                if n not in uniq:
-                    uniq.append(n)
-            return ", ".join(uniq[:3]) if uniq else "—"
         return "—"
 
     def normalize(pkg: dict, level: str) -> dict:
@@ -377,8 +377,8 @@ def add_packaging():
         recyclability = request.form.get('recyclability')
         package_shape = request.form.get('packageShape')
 
-        if not all([level, package_code, recyclability]):
-            flash('Level, Code, and Recyclability are required.', 'danger')
+        if not all([level, package_code]):
+            flash('Level and Code are required.', 'danger')
             return redirect(url_for("main.products"))
 
         # --- Dimensions ---
@@ -1247,6 +1247,9 @@ def get_packaging_details():
             "_id": str(package["_id"]),
             "package_code": package.get("package_code"),
             "level": level,
+            "component_type": pick_component_type_text(package),
+            "material": pick_material_text(package),
+            "recyclability": package.get("recyclability") or "—",
             "linked_products": clean_linked_products,
             "supplier_id": str(package.get("supplier")),
             "supplier_name": supplier_name
@@ -1640,8 +1643,8 @@ def update_packaging(package_id):
         recyclability = request.form.get('recyclability')
         package_shape = request.form.get('packageShape')
 
-        if not all([level, package_code, recyclability]):
-            flash('Level, Code, and Recyclability are required.', 'danger')
+        if not all([level, package_code]):
+            flash('Level and Code are required.', 'danger')
             return redirect(url_for("main.products"))
 
         # --- Dimensions ---
