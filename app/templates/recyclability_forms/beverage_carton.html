@@ -1,0 +1,363 @@
+<div class="beverage-carton-questionnaire d-none">
+                    <div class="question-block question-1-BC">
+                        <label class="form-label">1. Is your packaging a beverage carton according to the definition of a beverage carton?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ1[0]" value="R" onchange="showNextQuestion(this)" data-next="question-2-BC">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-R"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ1[0]" value="NR" onchange="showNextQuestion(this)" data-next="question-2-BC">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-N"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-2-BC">
+                        <label class="form-label">2. The disposable unit consists of...</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ2[0]" value="O" onchange="showNextQuestion(this)" data-next="question-3-BC">
+                          <label class="form-check-label">≥ 70% paper and/or cardboard</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ2[0]" value="R" onchange="showNextQuestion(this)" data-next="question-3-BC">
+                          <label class="form-check-label">&lt; 70% paper and/or cardboard</label> <span class="bubble bubble-R"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-3-BC">
+                        <label class="form-label">3. Is the outer layer of the beverage carton PE?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ3[0]" value="O" onchange="showNextQuestion(this)" data-next="question-4-BC">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="mt-3 mb-2">
+                            <strong>No</strong><br>
+                            <small class="text-muted">
+                              In principle, beverage cartons without an LDPE outer layer are not recognised,
+                              but there are other materials that can still be detected. The disposable unit can
+                              be tested for detectability in a recognised sorting institute. If the result is positive,
+                              you can enter ‘Optimal’ here.
+                            </small>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ3[0]" value="O" onchange="showNextQuestion(this)" data-next="question-4-BC">
+                          <label class="form-check-label">Optimal</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ3[0]" value="L" onchange="showNextQuestion(this)" data-next="question-4-BC">
+                          <label class="form-check-label">Not Optimal</label> <span class="bubble bubble-L"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-4-BC">
+                        <label class="form-label">4. Will the disposable unit fit through a 3cm diameter hole?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ4[0]" value="O" onchange="showNextQuestion(this)" data-next="question-5-BC">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ4[0]" value="L" onchange="showNextQuestion(this)" data-next="question-5-BC">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-L"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-5-BC">
+                        <label class="form-label">5. Is it a cylindrical or conical-shaped package with a volume of less than 200ml?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ5[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-6-BC">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ5[0]" value="N" onchange="showNextQuestion(this)" data-next="question-7-BC">
+                          <label class="form-check-label">No</label>
+                        </div>
+                    </div>
+                    <div class="question-block question-6-BC">
+                        <label class="form-label">6. Is it a hard cylindrical or conical package that can be flattened during the sorting process?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ6[0]" value="O R" onchange="showNextQuestion(this)" data-next="question-7-BC">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-O"></span> <span class="bubble bubble-R"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ6[0]" value="L" onchange="showNextQuestion(this)" data-next="question-7-BC">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-L"></span>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-7-BC">
+                        <label class="form-label">7. Determine the material composition of the main component.</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                            The main component contains an LDPE outer layer with a thickness of 7µm or more
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                            The main component contains EVOH, SiOx, Alox or metallisation. The condition
+                            is that these account for a maximum of 5% of the weight of the PE layer.
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                            The main component contains a barrier layer of 1µm aluminium or more
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                            The main component contains Polyamide (PA). The condition is that this is a PE
+                            layer containing a maximum of 20% PA6 or PA6/6.6, together with at least one
+                            layer of the compatibiliser maleimide anhydride (≥ 0.5 g per g of PA).
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                            The main component contains PAE, urea or formaldehyde
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                            The main component contains more than 5% EVOH, SiOx, Alox or metallisation and/or more than 20% PA in the PE layer.
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                                The main component contains less than 5% PET.
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                                The main component contains wax.
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                                The main component contains an LDPE outer layer thinner than 7µm
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ7[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-8-BC">
+                           <label class="form-check-label">
+                                The main component contains more than 5% PET.
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-8-BC">
+                        <label class="form-label">8. Were any disruptive substances used?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ8[0]" value="O" onchange="showNextQuestion(this)" data-next="question-9-BC">
+                          <label class="form-check-label">No deliberate use of disruptive substances</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ8[0]" value="NR" onchange="showNextQuestion(this)" data-next="question-9-BC">
+                          <label class="form-check-label">PFAS, PVC, PVDC, bio-degradables or oxo-degradables or silicones</label> <span class="bubble bubble-N"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-9-BC">
+                        <label class="form-label">9. Does it concern packaging without direct prints, labels or sleeves?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ9[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ9[0]" value="N" onchange="showNextQuestion(this)" data-next="question-10-BC">
+                          <label class="form-check-label">No</label>
+                        </div>
+                    </div>
+                    <div class="question-block question-10-BC">
+                        <label class="form-label">10. If the main component contains direct prints, how is it structured?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ10[0]" value="O" onchange="showNextQuestion(this)" data-next="question-11-BC">
+                          <label class="form-check-label">No printing</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ10[0]" value="O" onchange="showNextQuestion(this)" data-next="question-11-BC">
+                          <label class="form-check-label">One of the following printing techniques has been used: Off-Set, Flexo, Gravure or Digital.</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ10[0]" value="R" onchange="showNextQuestion(this)" data-next="question-11-BC">
+                          <label class="form-check-label">Mineral-based offset inks, hotmelt-based digital inks and UV inks.</label> <span class="bubble bubble-R"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ10[0]" value="L" onchange="showNextQuestion(this)" data-next="question-11-BC">
+                          <label class="form-check-label">The colour of the outside packaging is black and covers more than 50% of the
+                            surface for beverage cartons holding volumes of 500ml or less and more than 70% for beverage cartons holding larger volumes.  <span class="bubble bubble-L"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ10[0]" value="L" onchange="showNextQuestion(this)" data-next="question-11-BC">
+                          <label class="form-check-label">The packaging is shiny and covers more
+                            than 50% of the surface for beverage cartons holding volumes of 500ml or less and more than 70% for beverage cartons holding larger volumes.   <span class="bubble bubble-L"></span></label>
+                        </div>
+                    </div>
+                    <div class="question-block question-11-BC">
+                        <label class="form-label">11. Are any inks used on the main component, label and/or sleeve that are on the Eupia exclusion list?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ11[0]" value="O" onchange="showNextQuestion(this)" data-next="question-12-BC">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ11[0]" value="NR" onchange="showNextQuestion(this)" data-next="question-12-BC">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-N"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-12-BC">
+                        <label class="form-label">12. If one of the following situations applies, labels and sleeves will not affect sortability</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ12[0]" value=" " onchange="showNextQuestion(this)" data-next="question-14-BC">
+                          <label class="form-check-label">Labels or sleeves cover less than 50 percent of the surface area of packaging holding volumes ≤ 500 ml</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ12[0]" value=" " onchange="showNextQuestion(this)" data-next="question-14-BC">
+                          <label class="form-check-label">Labels or sleeves cover less than 70 percent of the surface area of packaging holding volumes > 500 ml</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ12[0]" value=" " onchange="showNextQuestion(this)" data-next="question-13-BC">
+                          <label class="form-check-label">None of the above options apply</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-13-BC">
+                        <label class="form-label">13. Labels and sleeves that do not meet the conditions stated in question 12
+                                                    will impact sortability. Select as applicable.</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ13[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                           <label class="form-check-label">
+                            The sleeve or label must be completely removed to reach the product
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ13[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                           <label class="form-check-label">
+                            The label is made of LDPE, the printing
+                            applied is based on offset oil-based ink (vegetable), flexo or engraving; solvent
+                            or water based. The adhesive is approved for recycling according to EPRC
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ13[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                           <label class="form-check-label">
+                            The label is made of LDPE, but the inks or adhesive do not meet the requirements described above
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ13[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                           <label class="form-check-label">
+                                The label or sleeve is made of plastics other than LDPE
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ13[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                           <label class="form-check-label">
+                                The colour of the material of a label or sleeve is black
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ13[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-14-BC">
+                           <label class="form-check-label">
+                                The label or sleeve has a visible shiny outer layer
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-14-BC">
+                        <label class="form-label">14. Does the package contain any closures or subcomponents?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ14[0]" value="N" onchange="showNextQuestion(this)" data-next="question-16-BC">
+                          <label class="form-check-label">No</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ14[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-15-BC">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-15-BC">
+                        <label class="form-label">15. What material are the closures or subcomponents made of?</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ15[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-16-BC">
+                           <label class="form-check-label">
+                            PE or PP-based material with a density of 1 g/cm3 or less
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ15[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-16-BC">
+                           <label class="form-check-label">
+                            PE and/or PP with a density greater than 1 g/cm3 and other plastics, such as PET, PS, PC, PLA
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ15[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-16-BC">
+                           <label class="form-check-label">
+                                Closures with PVC, PVdC, bio-degradables or oxo-degradables, silicones and/or elastomers
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-16-BC">
+                        <label class="form-label">16. Is the packaging without the use of adhesive?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ16[0]" value="Y" onchange="showNextQuestion(this)">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="beverageCQ16[0]" value="N" onchange="showNextQuestion(this)" data-next="question-17-BC">
+                          <label class="form-check-label">No</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-17-BC">
+                        <label class="form-label">17. Select what applies to the adhesive of the various layers of the main
+                                        component, labels and/or subcomponents</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ17[0][]" value="O" onchange="showNextQuestion(this)" >
+                           <label class="form-check-label">
+                            Hotmelt larger than 1.6mm in diameter
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ17[0][]" value="O" onchange="showNextQuestion(this)" >
+                           <label class="form-check-label">
+                            Hotmelt with melting point higher than 68°C
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ17[0][]" value="O R" onchange="showNextQuestion(this)" >
+                           <label class="form-check-label">
+                            Water-soluble adhesives. If approved for recycling according to the EPRC, this option can still score "Optimal".
+                               <span class="bubble bubble-O"></span> <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ17[0][]" value="L" onchange="showNextQuestion(this)" >
+                           <label class="form-check-label">
+                            Water-insoluble or re-dispersing adhesives that are not approved for recycling
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="beverageCQ17[0][]" value="NR" onchange="showNextQuestion(this)" >
+                           <label class="form-check-label">
+                            Hotmelts that melt below 68°C and adhesive dots smaller than 1.6 mm
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                    </div>
+                </div>

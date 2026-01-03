@@ -816,16 +816,40 @@ def get_activity_icon(activity_type):
     if not isinstance(activity_type, str):
         return "bi-info-circle"
 
+    if "product_creation" == activity_type:
+        return "bi-plus-square"
+    if "product_update" == activity_type:
+        return "bi-pencil-square"
+    if "product_deletion" == activity_type:
+        return "bi-trash"
+        
+    if "packaging_creation" == activity_type:
+        return "bi-box-seam"
+    if "packaging_update" == activity_type:
+        return "bi-pencil-square"
+    if "packaging_deletion" == activity_type:
+        return "bi-trash"
+
+    if "partner_creation" == activity_type:
+        return "bi-person-plus"
+    if "partner_update" == activity_type:
+        return "bi-pencil-square"
+    if "partner_deletion" == activity_type:
+        return "bi-person-dash"
+
+    if "connection" in activity_type:
+        return "bi-link-45deg"
+    if "sales" in activity_type:
+        return "bi-graph-up-arrow"
+
+    # Fallback for general types
     if "product" in activity_type:
         return "bi-qr-code"
     elif "packaging" in activity_type:
         return "bi-box"
     elif "partner" in activity_type:
         return "bi-person"
-    elif "connection" in activity_type:
-        return "bi-arrows-h"
-    elif "sales" in activity_type:
-        return "bi-cash-coin"
+        
     return "bi-info-circle"
 
 
@@ -1474,6 +1498,76 @@ def delete_packaging(package_id):
 
         return jsonify({"status": "success", "message": f"Packaging '{package_code}' deleted successfully."})
 
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@main_bp.route('/get_recyclability_form/<form_name>')
+@login_required
+def get_recyclability_form(form_name):
+    """
+    Renders a specific recyclability form template.
+    Note: This is an authenticated route.
+    """
+    try:
+        # Basic security: prevent directory traversal
+        if '..' in form_name or '/' in form_name:
+            return "Invalid form name", 400
+        
+        template_path = f"recyclability_forms/{form_name}"
+        
+        # render_template will raise a TemplateNotFound error if the file doesn't exist,
+        # which will be caught by the generic exception handler below.
+        return render_template(template_path)
+
+    except Exception as e:
+        # In a real app, you might want more specific error handling
+        # and logging for template not found errors.
+        return f"Form '{form_name}' not found.", 404
+
+
+@main_bp.route("/update_packaging_recyclability", methods=["POST"])
+@login_required
+def update_packaging_recyclability():
+    """
+    Updates only the recyclability field of a packaging item.
+    """
+    try:
+        package_id_str = request.form.get('packageId')
+        package_level = request.form.get('packageLevel')
+        recyclability = request.form.get('recyclability')
+        
+        if not all([package_id_str, package_level, recyclability]):
+            return jsonify({"status": "error", "message": "Missing required fields"}), 400
+        
+        package_oid = ObjectId(package_id_str)
+        owner_oid = ObjectId(current_user.id)
+        
+        collections = {
+            "Primary": mongo.db.primary_packagings,
+            "Secondary": mongo.db.secondary_packagings,
+            "Tertiary": mongo.db.tertiary_packagings
+        }
+        collection = collections.get(package_level)
+        
+        if collection is None:
+            return jsonify({"status": "error", "message": "Invalid packaging level"}), 400
+        
+        # Verify ownership
+        package = collection.find_one({"_id": package_oid, "owner": owner_oid})
+        if not package:
+            return jsonify({"status": "error", "message": "Packaging not found or access denied"}), 404
+        
+        # Update only recyclability
+        collection.update_one(
+            {"_id": package_oid},
+            {"$set": {"recyclability": recyclability}}
+        )
+        
+        _log_activity("packaging_update", f"Updated recyclability for {package_level} packaging: {package.get('package_code', 'N/A')}")
+        
+        return jsonify({"status": "success", "message": "Recyclability updated successfully"})
+        
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 

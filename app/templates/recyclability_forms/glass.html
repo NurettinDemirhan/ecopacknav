@@ -1,0 +1,182 @@
+<div class="glass-questionnaire d-none">
+                    <div class="question-block question-1-G">
+                        <label class="form-label">1. The disposable unit consists of ...</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ1[0]" value="O" onchange="showNextQuestion(this)" data-next="question-2-G">
+                          <label class="form-check-label">≥ 70% packaging glass</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ1[0]" value="R" onchange="showNextQuestion(this)" data-next="question-2-G">
+                          <label class="form-check-label">&lt; 70% packaging glass</label> <span class="bubble bubble-R"></span>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-2-G">
+                        <label class="form-label">2. Select potential disruptors in the main component</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ2[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-3-G">
+                           <label class="form-check-label">
+                            No disruptors present
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ2[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-3-G">
+                           <label class="form-check-label">
+                            Heat resistant glass
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ2[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-3-G">
+                           <label class="form-check-label">
+                            Crystal glass
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ2[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-3-G">
+                           <label class="form-check-label">
+                            Ceramics, porcelain and stone
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-3-G">
+                        <label class="form-label">3. What is the color of the glass of the main component?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ3[0]" value="O" onchange="showNextQuestion(this)" data-next="question-4-G">
+                          <label class="form-check-label">Transparant: uncolored, green or brown</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ3[0]" value="R" onchange="showNextQuestion(this)" data-next="question-4-G">
+                          <label class="form-check-label">Other colors (transparant)</label> <span class="bubble bubble-R"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ3[0]" value="L" onchange="showNextQuestion(this)" data-next="question-4-G">
+                          <label class="form-check-label">Other colors (opaque)</label> <span class="bubble bubble-L"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ3[0]" value="NR" onchange="showNextQuestion(this)" data-next="question-4-G">
+                          <label class="form-check-label">Black</label> <span class="bubble bubble-N"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-4-G">
+                        <label class="form-label">4. Select which coatings, in addition to the regular hot-end and cold-end coatings, may have been used.</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ4[0]" value="O" onchange="showNextQuestion(this)" data-next="question-5-G">
+                          <label class="form-check-label">No additional coatings</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ4[0]" value="O" onchange="showNextQuestion(this)" data-next="question-5-G">
+                          <label class="form-check-label">Translucent barrier coating/surface treatment</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ4[0]" value="L" onchange="showNextQuestion(this)" data-next="question-5-G">
+                          <label class="form-check-label">Light barrier coating/surface treatment</label> <span class="bubble bubble-L"></span>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-5-G">
+                        <label class="form-label">5. Select what applies to the labels, sleeves or direct prints.</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ5[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-6-G">
+                           <label class="form-check-label">
+                            No labels, sleeves or direct prints
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ5[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-6-G">
+                           <label class="form-check-label">
+                            Direct print
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ5[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-6-G">
+                           <label class="form-check-label">
+                            Paper label(s)
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ5[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-6-G">
+                           <label class="form-check-label">
+                            Plastic label(s)
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ5[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-6-G">
+                           <label class="form-check-label">
+                            Full-body sleeve (plastic)
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-6-G">
+                        <label class="form-label">6. Will all closures and/or sub-components come loose from the glass if it is broken?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ6[0]" value="Y" onchange="showNextQuestion(this)">
+                          <label class="form-check-label">There are no closures and/or sub-components present</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ6[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-7-G">
+                          <label class="form-check-label">Yes, all closures and/or sub-components come loose from the glass</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ6[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-7-G question-8-G">
+                          <label class="form-check-label">No, one or more closures and/or sub-components will not come loose from the
+                                                            glass if it is broken.</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="glassQ6[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-8-G">
+                          <label class="form-check-label">No, none of the closures and/or sub-components will come loose from the
+                                                            glass if it is broken.</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-7-G">
+                        <label class="form-label">7. What material are the closures/sub-components that come loose from
+                                                    the glass made of?</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ7[0][]" value="O" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Glass, paper, plastic, magnetic metal, non-magnetic metal (excluding brackets)
+                                and/or other materials
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ7[0][]" value="L" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Non-magnetic metal bracket
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-8-G">
+                        <label class="form-label">8. What material are the closures/sub-components made of that do not
+                                                    come loose from the glass?</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ8[0][]" value="O" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Glass and paper
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ8[0][]" value="R" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Plastic, magnetic metal, non-magnetic metal (excluding brackets) and/or
+                                other materials.
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="glassQ8[0][]" value="L" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Non-magnetic metal brackets
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                    </div>
+                </div>

@@ -236,3 +236,34 @@ body{ margin:0; background:var(--main-bg); }
     font-weight: 500;
 }
 
+/* Recyclability Form Bubbles */
+.bubble {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-left: 8px;
+    vertical-align: middle;
+    border: 1px solid #000000; /* Thin black border */
+}
+
+.bubble-O {
+    background-color: #4caf50; /* Green - Optimal */
+}
+
+.bubble-R {
+    background-color: #ffeb3b; /* Bright Yellow - Recyclable */
+}
+
+.bubble-L {
+    background-color: #ff9800; /* Orange - Limited */
+}
+
+.bubble-N {
+    background-color: #f44336; /* Red - Not recyclable */
+}
+
+.bubble-Y {
+    background-color: #4caf50; /* Green - Yes */
+}
+

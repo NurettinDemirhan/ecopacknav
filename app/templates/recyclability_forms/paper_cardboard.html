@@ -1,0 +1,226 @@
+<div class="paper-cardboard-questionnaire d-none">
+                    <div class="question-block question-1-PC">
+                        <label class="form-label">1. The disposable unit consists of ...</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ1[0]" value="O" onchange="showNextQuestion(this)" data-next="question-2-PC">
+                          <label class="form-check-label">≥ 70% paper and/or cardboard</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ1[0]" value="R" onchange="showNextQuestion(this)" data-next="question-2-PC">
+                          <label class="form-check-label">&lt; 70% paper and/or cardboard</label> <span class="bubble bubble-R"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-2-PC">
+                        <label class="form-label">2. Was the disposable unit designed to be clean and dry after use?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ2[0]" value="O" onchange="showNextQuestion(this)" data-next="question-3-PC">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ2[0]" value="NR" onchange="showNextQuestion(this)" data-next="question-3-PC">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-N"></span>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-3-PC">
+                        <label class="form-label">3. Select possible coatings that are featured on the main component</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ3[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-4-PC">
+                           <label class="form-check-label">
+                            No coating or lamination
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ3[0][]" value="R L" onchange="showNextQuestion(this)" data-next="question-4-PC">
+                           <label class="form-check-label">
+                            The disposable unit is coated or laminated on one side.
+                               <span class="bubble bubble-R"></span> <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ3[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-4-PC">
+                           <label class="form-check-label">
+                            A lamination thinner than 7μm is applied
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ3[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-4-PC">
+                           <label class="form-check-label">
+                            Wax coating
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ3[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-4-PC">
+                           <label class="form-check-label">
+                            The disposable unit is coated or laminated on two sides.
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-4-PC">
+                        <label class="form-label">4. Select potential disruptors in the main component</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ4[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-5-PC">
+                           <label class="form-check-label">
+                            No disruptors present
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ4[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-5-PC">
+                           <label class="form-check-label">
+                            PVC
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ4[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-5-PC">
+                           <label class="form-check-label">
+                            PFAS
+                               <span class="bubble bubble-N"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-5-PC">
+                        <label class="form-label">5. Does the packaging contain labels, sleeves or direct prints?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ5[0]" value="N" onchange="showNextQuestion(this)" data-next="question-7-PC">
+                          <label class="form-check-label">No</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ5[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-6-PC">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-6-PC">
+                        <label class="form-label">6. Determine the impact of the labels, prints or sleeves</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ6[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-7-PC">
+                           <label class="form-check-label">
+                            Direct print
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ6[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-7-PC">
+                           <label class="form-check-label">
+                            The disposable unit features a paper label
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ6[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-7-PC">
+                           <label class="form-check-label">
+                            The disposable unit features a label or sleeve made of a material other than paper.
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-7-PC">
+                        <label class="form-label">7. Does the packaging contain closures and/or subcomponents?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ7[0]" value="N" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                          <label class="form-check-label">No</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ7[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-8-PC">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-8-PC">
+                        <label class="form-label">8. What material are the closures or subcomponents made of?</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ8[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                           <label class="form-check-label">
+                            Unreinforced paper tape
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ8[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                           <label class="form-check-label">
+                           Paper or cardboard subcomponent (e.g. a handle)
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ8[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                           <label class="form-check-label">
+                           Staples
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ8[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                           <label class="form-check-label">
+                           Plastic reinforced tape
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ8[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                           <label class="form-check-label">
+                           Plastic window, adhesive tape or other type of plastic closure
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ8[0][]" value="O R" onchange="showNextQuestion(this)" data-next="question-9-PC">
+                           <label class="form-check-label">
+                           The disposable unit has a pergamine window
+                               <span class="bubble bubble-O"></span><span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-9-PC">
+                        <label class="form-label">9. Was any adhesive used in the disposable unit?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ9[0]" value="N" onchange="showNextQuestion(this)">
+                          <label class="form-check-label">No</label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="paperCQ9[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-10-PC">
+                          <label class="form-check-label">Yes</label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-10-PC">
+                        <label class="form-label">10. Which of the following options apply to the adhesives used in the disposable unit?</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ10[0][]" value="O" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Water-soluble
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ10[0][]" value="O" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Rigid curing
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ10[0][]" value="O" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Hot melt with particles larger than 2 mm and/or a melting point higher than 68°C
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ10[0][]" value="R" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Non-water-soluble or curable adhesives
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="paperCQ10[0][]" value="L" onchange="showNextQuestion(this)">
+                           <label class="form-check-label">
+                            Adhesive containing hot-melt particles with a melting point lower than 68°C and smaller than 2 mm.
+                               <span class="bubble bubble-L"></span>
+                           </label>
+                        </div>
+                  </div>
+                </div>

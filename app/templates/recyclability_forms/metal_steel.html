@@ -1,0 +1,78 @@
+<div class="metal-steel-questionnaire d-none">
+                    <div class="question-block question-1-MS">
+                        <label class="form-label">1. The disposable unit consists of ...</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ1[0]" value="O" onchange="showNextQuestion(this)" data-next="question-2-MS">
+                          <label class="form-check-label">≥ 70% steel</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ1[0]" value="R" onchange="showNextQuestion(this)" data-next="question-2-MS">
+                          <label class="form-check-label">&lt; 70% steel</label> <span class="bubble bubble-R"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-2-MS">
+                        <label class="form-label">2. Does the disposable unit contain heavy metals such as copper, nickel and cadmium? </label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ2[0]" value="O" onchange="showNextQuestion(this)" data-next="question-3-MS">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ2[0]" value="L" onchange="showNextQuestion(this)" data-next="question-3-MS">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-L"></span>
+                        </div>
+                    </div>
+                    <div class="question-block question-3-MS">
+                        <label class="form-label">3. Is the disposable unit a combination with aluminium? </label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ3[0]" value="O" onchange="showNextQuestion(this)" data-next="question-4-MS">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ3[0]" value="R" onchange="showNextQuestion(this)" data-next="question-4-MS">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-R"></span>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-4-MS">
+                        <label class="form-label">4. Determine the material of the closure and sub-components present, such as lids and labels.</label>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="metalSQ4[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-5-MS">
+                           <label class="form-check-label">
+                            No closure or other sub-components are present
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="metalSQ4[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-5-MS">
+                           <label class="form-check-label">
+                            Steel
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="metalSQ4[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-5-MS">
+                           <label class="form-check-label">
+                            Other materials (such as plastic, paper or wood)
+                               <span class="bubble bubble-O"></span>
+                           </label>
+                        </div>
+                        <div class="form-check">
+                           <input type="checkbox" class="form-check-input" name="metalSQ4[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-5-MS">
+                           <label class="form-check-label">
+                            Aliminium
+                               <span class="bubble bubble-R"></span>
+                           </label>
+                        </div>
+
+                    </div>
+                    <div class="question-block question-5-MS">
+                        <label class="form-label">5. Has PVC been used in the disposal unit, e.g. a PVC coating? </label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ5[0]" value="O" onchange="showNextQuestion(this)">
+                          <label class="form-check-label">No</label> <span class="bubble bubble-O"></span>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="metalSQ5[0]" value="R" onchange="showNextQuestion(this)">
+                          <label class="form-check-label">Yes</label> <span class="bubble bubble-R"></span>
+                        </div>
+                    </div>
+                </div>

@@ -61,11 +61,6 @@ h1 {
     background-color: #fafafa;
 }
 
-.activity-item {
-    padding: 0.35rem;
-    border-bottom: 1px solid #eee;
-}
-
 .filter-card {
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -84,4 +79,29 @@ h1 {
 .profiles-at-risk-btn:hover {
     background-color: #f8f9fa;
     color: rgba(174, 68, 72);
+}
+
+.activity-icon-container {
+    background-color: #083c46;
+    color: white;
+    width: 36px; /* A bit larger */
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* prevent shrinking */
+    font-size: 1.1rem; /* Adjust icon size */
+}
+
+.activity-item {
+    padding: 0.75rem 1rem; /* More horizontal padding */
+    border-bottom: 1px solid #eee;
+}
+
+/* Make timestamp less intrusive */
+.activity-item small {
+    font-size: 0.85em;
+    white-space: nowrap; /* Prevent wrapping */
+    padding-left: 1rem; /* Space between description and date */
 }

@@ -1,0 +1,380 @@
+<div class="rigid-plastic-pet-bottle-questionnaire d-none">
+                    <div class="question-block question-1-RPB">
+                        <label class="form-label">1. The disposable unit consists of ...</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ1[0]" value="O" onchange="showNextQuestion(this)" data-next="question-2-RPB">
+                          <label class="form-check-label">≥ 70% rigid PET <span class="bubble bubble-O"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ1[0]" value="R" onchange="showNextQuestion(this)" data-next="question-2-RPB">
+                          <label class="form-check-label">&lt; 70% rigid PET <span class="bubble bubble-R"></span></label>
+                        </div>
+                    </div>
+                    <div class="question-block question-2-RPB">
+                        <label class="form-label">2. Will the disposable unit fit through a 3 cm hole?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ2[0]" value="O" onchange="showNextQuestion(this)" data-next="question-3-RPB">
+                          <label class="form-check-label">No <span class="bubble bubble-O"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ2[0]" value="R" onchange="showNextQuestion(this)" data-next="question-3-RPB">
+                          <label class="form-check-label">Yes <span class="bubble bubble-R"></span></label>
+                        </div>
+                    </div>
+                    <div class="question-block question-3-RPB">
+                        <label class="form-label">3. What is the capacity of the disposable unit?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ3[0]" value="O" onchange="showNextQuestion(this)" data-next="question-4-RPB">
+                          <label class="form-check-label">5 litres or less <span class="bubble bubble-O"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ3[0]" value="R" onchange="showNextQuestion(this)" data-next="question-4-RPB">
+                          <label class="form-check-label">Larger than 5 litres <span class="bubble bubble-R"></span></label>
+                        </div>
+                    </div>
+                    <div class="question-block question-4-RPB">
+                        <label class="form-label">4. Does the packaging have a cylindrical or conical shape and a capacity of less than 200 ml?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ4[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-5-RPB">
+                          <label class="form-check-label">Yes </label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ4[0]" value="N" onchange="showNextQuestion(this)" data-next="question-6-RPB">
+                          <label class="form-check-label">No </label>
+                        </div>
+                    </div>
+                    <div class="question-block question-5-RPB">
+                        <label class="form-label">5. Is the packaging in question hard, cylindrical or conical according to the description in the explanation and
+                                                    can it be flattened during the sorting process?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ5[0]" value="O R" onchange="showNextQuestion(this)" data-next="question-6-RPB">
+                          <label class="form-check-label">Yes <span class="bubble bubble-O"></span> <span class="bubble bubble-R"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ5[0]" value="R" onchange="showNextQuestion(this)" data-next="question-6-RPB">
+                          <label class="form-check-label">No <span class="bubble bubble-R"></span></label>
+                        </div>
+                    </div>
+                    <div class="question-block question-6-RPB">
+                        <label class="form-label">6. Is the main component made of mono-A-PET or rPET without
+                                                        barriers, coatings and/or fillers?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ6[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-8-RPB">
+                          <label class="form-check-label">Yes </label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ6[0]" value="N" onchange="showNextQuestion(this)" data-next="question-7-RPB">
+                          <label class="form-check-label">No </label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-7-RPB">
+                          <label class="form-label">7. Determine the material composition of the main component</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ7[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-8-RPB">
+                            <label class="form-check-label">
+                              The main component is made of CPET
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ7[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-8-RPB">
+                            <label class="form-check-label">
+                              The main component is made of APET with additional plastic layers, such as a PE seal
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ7[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-8-RPB">
+                            <label class="form-check-label">
+                              The main component contains barrier layers
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ7[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-8-RPB">
+                            <label class="form-check-label">
+                              The main component contains coatings, additives and/or fillers that influence recycling
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ7[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-8-RPB">
+                            <label class="form-check-label">
+                              The main component is made of PET and contains non-plastic material layers, such as paper or aluminium
+                              <span class="bubble bubble-N"></span>
+                            </label>
+                          </div>
+                    </div>
+                    <div class="question-block d-none question-8-RPB">
+                          <label class="form-label">8. Select potential disruptors in the main component</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ8[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-9-RPB">
+                            <label class="form-check-label">
+                              No disruptors present
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ8[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-9-RPB">
+                            <label class="form-check-label">
+                              Oxo-degradable plastics
+                              <span class="bubble bubble-N"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ8[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-9-RPB">
+                            <label class="form-check-label">
+                              PVC, PVDC or PETG
+                              <span class="bubble bubble-N"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ8[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-9-RPB">
+                            <label class="form-check-label">
+                              Silicone and elastomers
+                              <span class="bubble bubble-N"></span>
+                            </label>
+                          </div>
+                    </div>
+                    <div class="question-block question-9-RPB">
+                        <label class="form-label">9. What colour is the material of the main component?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ9[0]" value="O" onchange="showNextQuestion(this)" data-next="question-10-RPB">
+                          <label class="form-check-label">Transparent and colourless <span class="bubble bubble-O"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ9[0]" value="R" onchange="showNextQuestion(this)" data-next="question-10-RPB">
+                          <label class="form-check-label">Opaque and transparent colours <span class="bubble bubble-R"></span></label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ9[0]" value="L" onchange="showNextQuestion(this)" data-next="question-10-RPB">
+                          <label class="form-check-label">Black and dark colours based on Carbonblack <span class="bubble bubble-L"></span></label>
+                        </div>
+                    </div>
+                    <div class="question-block question-10-RPB">
+                        <label class="form-label">10. Is the packaging free from labels, sleeves or direct prints?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ10[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-14-RPB">
+                          <label class="form-check-label">Yes </label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ10[0]" value="N" onchange="showNextQuestion(this)" data-next="question-11-RPB">
+                          <label class="form-check-label">No </label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-11-RPB">
+                          <label class="form-label">11. Labels or sleeves that meet the following criteria do not affect sortability</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ11[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-12-RPB">
+                            <label class="form-check-label">
+                              Labels, sleeves or direct prints cover less than 50% of the surface area of the
+                                packaging (≤ 500 ml)
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ11[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-12-RPB">
+                            <label class="form-check-label">
+                              Labels, sleeves or direct prints cover a maximum of 70% of the surface area of
+                                the packaging (> 500 ml)
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ11[0][]" value=" " onchange="showNextQuestion(this)" data-next="question-12-RPB">
+                            <label class="form-check-label">
+                              None of the above
+                            </label>
+                          </div>
+                    </div>
+                    <div class="question-block d-none question-12-RPB">
+                          <label class="form-label">12. Labels and sleeves that do not meet the requirements set forth in
+                                                    Question 11 affect sortability. Select what applies to your packaging.</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The sleeve or label has to be removed in its entirety to access the product
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The label or sleeve is made of the same material as the main component
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The label or sleeve is made of PET, PS, PE or PP and is no more than 120 µm (0,12 mm) thick
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The label or sleeve features a direct print
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The label or sleeve is made of plastics other than PET, PS, PE or PP
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The colour of the material of the label or sleeve and/or the print is black or dark coloured based on Carbonblack.
+                              <span class="bubble bubble-L"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              There is a shiny metal layer all over the surface.
+                              <span class="bubble bubble-L"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ12[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-13-RPB">
+                            <label class="form-check-label">
+                              The label or sleeve features layers that are impenetrable by light.
+                              <span class="bubble bubble-L"></span>
+                            </label>
+                          </div>
+                    </div>
+                    <div class="question-block d-none question-13-RPB">
+                          <label class="form-label">The materials used in labels and sleeves and the presence of direct
+                                                    prints affect recyclability. Select what applies to your packaging.</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ13[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-14-RPB">
+                            <label class="form-check-label">
+                              PE and/or PP with density <1 g/cm3
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ13[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-14-RPB">
+                            <label class="form-check-label">
+                              Other plastics including PETG and PE / PP with density > 1 g/cm3 and thermal paper
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ13[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-14-RPB">
+                            <label class="form-check-label">
+                              Direct prints on the PET packaging
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ13[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-14-RPB">
+                            <label class="form-check-label">
+                              Non-plastic materials such as non-thermal paper and aluminium
+                              <span class="bubble bubble-L"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ13[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-14-RPB">
+                            <label class="form-check-label">
+                              Added PVC or PVdC
+                              <span class="bubble bubble-N"></span>
+                            </label>
+                          </div>
+                    </div>
+                    <div class="question-block question-14-RPB">
+                        <label class="form-label">14. Is the packaging free from closures and subcomponents?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ14[0]" value="Y" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                          <label class="form-check-label">Yes </label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ14[0]" value="N" onchange="showNextQuestion(this)" data-next="question-15-RPB">
+                          <label class="form-check-label">No </label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-15-RPB">
+                          <label class="form-label">15. Select what material the closures or subcomponents are made of</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ15[0][]" value="O" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                            <label class="form-check-label">
+                              PE and/or PP-based material with a density <1 g/cm3
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ15[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                            <label class="form-check-label">
+                              Other plastics such as PET, PS, PC or PE and/or PP with a density > 1 g/cm3
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ15[0][]" value="R" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                            <label class="form-check-label">
+                              Non-plastic materials
+                              <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ15[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                            <label class="form-check-label">
+                              Enclosed hard metal parts
+                              <span class="bubble bubble-L"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ15[0][]" value="NR" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                            <label class="form-check-label">
+                              Closures with PVC, PVdC, PET-G, silicone and/or elastomers
+                              <span class="bubble bubble-N"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ15[0][]" value="L" onchange="showNextQuestion(this)" data-next="question-16-RPB">
+                            <label class="form-check-label">
+                              Non-fibrous materials
+                              <span class="bubble bubble-L"></span>
+                            </label>
+                          </div>
+                    </div>
+                    <div class="question-block question-16-RPB">
+                        <label class="form-label">16. Is the packaging free from glued-on labels, sleeves, or subcomponents?</label>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ16[0]" value="Y" onchange="showNextQuestion(this)">
+                          <label class="form-check-label">Yes </label>
+                        </div>
+                        <div class="form-check">
+                          <input type="radio" class="form-check-input" name="rigidPBQ16[0]" value="N" onchange="showNextQuestion(this)" data-next="question-17-RPB">
+                          <label class="form-check-label">No </label>
+                        </div>
+                    </div>
+                    <div class="question-block d-none question-17-RPB">
+                          <label class="form-label">17. Select which of the following applies to the adhesives used for labels and/or subcomponents</label>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ17[0][]" value="O" onchange="showNextQuestion(this)">
+                            <label class="form-check-label">
+                              Certified adhesives that dissolve or release in alkali or hot water (between 60-80°C)
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ17[0][]" value="O" onchange="showNextQuestion(this)">
+                            <label class="form-check-label">
+                              Labels are permanently glued to easily removable top film
+                              <span class="bubble bubble-O"></span>
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="rigidPBQ17[0][]" value="O R" onchange="showNextQuestion(this)">
+                            <label class="form-check-label">
+                              Adhesives that do not dissolve or come off when heated and/or have not yet been certified
+                              <span class="bubble bubble-O"></span> <span class="bubble bubble-R"></span>
+                            </label>
+                          </div>
+                    </div>
+                  </div>

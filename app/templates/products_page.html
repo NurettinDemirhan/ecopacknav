@@ -228,9 +228,8 @@
                 <div class="sortable-header center" data-column-index="1">Level <i class="bi bi-arrow-down-up"></i></div>
                 <div class="sortable-header center" data-column-index="2">Comp. Type <i class="bi bi-arrow-down-up"></i></div>
                 <div class="sortable-header center" data-column-index="3">Material <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header center" data-column-index="4">Supplier <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header center" data-column-index="5">Products Using <i class="bi bi-arrow-down-up"></i></div>
-                <div class="sortable-header center" data-column-index="6">Recyclability <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="4">Products Using <i class="bi bi-arrow-down-up"></i></div>
+                <div class="sortable-header center" data-column-index="5">Recyclability <i class="bi bi-arrow-down-up"></i></div>
                 <div>Actions</div>
             </div>
 
@@ -243,7 +242,6 @@
                         <div class="center">{{ row.level }}</div>
                         <div class="center">{{ row.component_type or '—' }}</div>
                         <div class="center">{{ row.material }}</div>
-                        <div class="center">{{ row.supplier }}</div>
                         <div class="center">{{ row.products_using }}</div>
 
                         {# recyclability grade görünümü #}
@@ -257,7 +255,15 @@
                         {% elif g.startswith('D') %}
                         <div class="grade grade-d center">D</div>
                         {% else %}
-                        <div class="grade center">—</div>
+                        <div class="grade center text-danger">
+                            <i class="bi bi-exclamation-circle-fill recyclability-trigger"
+                               title="Recyclability not set"
+                               data-bs-toggle="modal"
+                               data-bs-target="#recyclabilityModal"
+                               data-package-id="{{ row._id }}"
+                               data-package-level="{{ row.level }}"
+                               data-material="{{ row.material }}"></i>
+                        </div>
                         {% endif %}
 
                         <div class="cell" style="display: flex; gap: 0.3rem; align-items: center; justify-content: center;">
@@ -418,6 +424,7 @@
 {% include "packaging_edit_supplier_modal.html" %}
 {% include "partner_detail_offcanvas.html" %}
 {% include "partner_edit_connections_modal.html" %}
+{% include "recyclability_modal.html" %}
 
 {% endblock %}
 
@@ -464,6 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const packagingDetailOffcanvas = new bootstrap.Offcanvas(document.getElementById('packagingDetailOffcanvas'));
     document.querySelectorAll('.packaging-row-clickable').forEach(row => {
         row.addEventListener('click', function(event) {
+            if (event.target.closest('button')) return;
             const packageId = this.dataset.packageId;
             const packageLevel = this.dataset.packageLevel;
             fetch(`/get_packaging_details?id=${packageId}&level=${packageLevel}`).then(response => response.json()).then(data => {
@@ -865,6 +873,457 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // Helper function to recursively hide a question and all questions that were opened by it
+    function hideQuestionAndSubsequent(question, formContainer) {
+        if (!question) return;
+        
+        // Hide this question
+        question.classList.add('d-none');
+        
+        // Find all questions that might have been opened by this question
+        // We need to find all questions that come after this one in the DOM
+        const allQuestions = Array.from(formContainer.querySelectorAll('.question-block'));
+        const currentIndex = allQuestions.indexOf(question);
+        
+        // Hide all questions that come after this one
+        // (This is a simple approach - in a more complex scenario, we'd track the question tree)
+        for (let i = currentIndex + 1; i < allQuestions.length; i++) {
+            allQuestions[i].classList.add('d-none');
+        }
+    }
+    
+    // showNextQuestion function for recyclability forms
+    window.showNextQuestion = function(element) {
+        const nextQuestionClass = element.dataset.next;
+        if (!nextQuestionClass) return;
+        
+        // Get current question block
+        const currentQuestion = element.closest('.question-block');
+        if (!currentQuestion) return;
+        
+        // Find the form container (could be form or questionnaire div)
+        const formContainer = element.closest('form') || 
+                             element.closest('[class*="questionnaire"]') || 
+                             element.closest('#recyclability-form-container');
+        
+        if (!formContainer) return;
+        
+        // Find the next question block
+        const nextQuestion = formContainer.querySelector('.' + nextQuestionClass);
+        if (!nextQuestion) return;
+        
+        // For radio buttons: handle answer changes
+        if (element.type === 'radio') {
+            if (element.checked) {
+                // Find all radio buttons in the same group (same name)
+                const radioName = element.name;
+                const allRadiosInGroup = formContainer.querySelectorAll(`input[type="radio"][name="${radioName}"]`);
+                
+                // Hide questions that were opened by other radio buttons in this group
+                allRadiosInGroup.forEach(radio => {
+                    if (radio !== element) {
+                        // Get the question that this radio would open
+                        const otherNextClass = radio.dataset.next;
+                        if (otherNextClass) {
+                            const otherNextQuestion = formContainer.querySelector('.' + otherNextClass);
+                            if (otherNextQuestion && otherNextQuestion !== nextQuestion) {
+                                // Hide this question and all its subsequent questions
+                                hideQuestionAndSubsequent(otherNextQuestion, formContainer);
+                            }
+                        }
+                    }
+                });
+                
+                // Show next question
+                nextQuestion.classList.remove('d-none');
+                
+                // Scroll to next question smoothly
+                setTimeout(() => {
+                    nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        } 
+        // For checkboxes: show next question without hiding current (multiple can be selected)
+        else if (element.type === 'checkbox') {
+            if (element.checked) {
+                nextQuestion.classList.remove('d-none');
+            } else {
+                // If unchecked, check if any other checkbox in current question points to same next
+                const currentQuestionCheckboxes = currentQuestion.querySelectorAll(`input[type="checkbox"][data-next="${nextQuestionClass}"]`);
+                let anyChecked = false;
+                currentQuestionCheckboxes.forEach(cb => {
+                    if (cb.checked) {
+                        anyChecked = true;
+                    }
+                });
+                
+                // Hide next question only if no checkbox pointing to it is checked
+                if (!anyChecked) {
+                    // Also hide all subsequent questions
+                    hideAllSubsequentQuestions(nextQuestion, formContainer);
+                }
+            }
+            
+            // Scroll to next question if it's being shown
+            if (element.checked) {
+                setTimeout(() => {
+                    nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+    };
+    
+    // Recyclability Modal Handler
+    const recyclabilityModal = document.getElementById('recyclabilityModal');
+    let currentPackageId = null;
+    let currentPackageLevel = null;
+    
+    recyclabilityModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        currentPackageId = button.dataset.packageId;
+        currentPackageLevel = button.dataset.packageLevel;
+        let material = button.dataset.material;
+        const formContainer = document.getElementById('recyclability-form-container');
+        formContainer.innerHTML = '<p>Loading form...</p>'; // Placeholder
+        
+        // Debug: log material value
+        console.log('Material received:', material);
+
+        // Normalize material name for matching (case-insensitive, handle different formats)
+        function normalizeMaterial(mat) {
+            if (!mat) return '';
+            // Convert to lowercase and remove extra spaces
+            let normalized = mat.toLowerCase().trim();
+            // Handle multiple materials (comma-separated) - take the first one
+            if (normalized.includes(',')) {
+                normalized = normalized.split(',')[0].trim();
+            }
+            return normalized;
+        }
+        
+        // Map material patterns to form file names (case-insensitive matching)
+        function findFormFile(material) {
+            const normalized = normalizeMaterial(material);
+            
+            // Material pattern matching (order matters - more specific first)
+            if (normalized.includes('beverage carton')) {
+                return 'beverage_carton.html';
+            }
+            if (normalized.includes('flexible plastic pp') || normalized.includes('flexible pp')) {
+                return 'flexible_plastic_pp.html';
+            }
+            if (normalized.includes('flexible plastic pe') || normalized.includes('flexible pe')) {
+                return 'flexible_plastic_pe.html';
+            }
+            if (normalized.includes('flexible plastic other') || normalized.includes('flexible other')) {
+                return 'flexible_plastic_other.html';
+            }
+            if (normalized.includes('rigid plastic pet bottle') || normalized.includes('rigid pet bottle')) {
+                return 'rigid_plastic_pet_bottle.html';
+            }
+            if (normalized.includes('rigid plastic pe/pp') || normalized.includes('rigid pe/pp')) {
+                return 'rigid_plastic_pe_pp.html';
+            }
+            if (normalized.includes('rigid plastic other pet') || normalized.includes('rigid other pet')) {
+                return 'rigid_plastic_other_pet.html';
+            }
+            if (normalized.includes('rigid plastic other plastic') || normalized.includes('rigid other plastic')) {
+                return 'rigid_plastic_other_plastic.html';
+            }
+            if (normalized.includes('metal aluminium') || normalized.includes('metal aluminum')) {
+                return 'metal_aluminium.html';
+            }
+            if (normalized.includes('metal steel')) {
+                return 'metal_steel.html';
+            }
+            if (normalized.includes('paper') || normalized.includes('cardboard')) {
+                return 'paper_cardboard.html';
+            }
+            if (normalized.includes('glass')) {
+                return 'glass.html';
+            }
+            
+            return null;
+        }
+        
+        const formFileName = findFormFile(material);
+        
+        // Debug: log form file name
+        console.log('Form file name:', formFileName);
+
+        if (formFileName) {
+            fetch(`/get_recyclability_form/${formFileName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Form not found');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Get the existing form from modal
+                    const form = document.getElementById('recyclabilityForm');
+                    
+                    // Clear and populate form container
+                    formContainer.innerHTML = html;
+                    
+                    // Remove d-none class from main form container
+                    const mainContainer = formContainer.querySelector('[class*="questionnaire"]');
+                    if (mainContainer) {
+                        mainContainer.classList.remove('d-none');
+                    }
+                    
+                    // Hide all question blocks first (including those that might already be visible)
+                    const allQuestions = formContainer.querySelectorAll('.question-block');
+                    allQuestions.forEach(q => {
+                        q.classList.add('d-none');
+                    });
+                    
+                    // Find and show the first question block
+                    // First try to find question-1-* pattern
+                    let firstQuestion = Array.from(allQuestions).find(q => {
+                        const classes = q.className;
+                        // Match patterns like: question-1-PC, question-1-FPP, question-1-G, etc.
+                        return /question-1-/.test(classes);
+                    });
+                    
+                    // If not found, use the first question block in DOM order
+                    if (!firstQuestion && allQuestions.length > 0) {
+                        firstQuestion = allQuestions[0];
+                    }
+                    
+                    if (firstQuestion) {
+                        firstQuestion.classList.remove('d-none');
+                    }
+                    
+                    // Add grade display (auto-calculated, not selectable)
+                    const gradeDisplayDiv = document.createElement('div');
+                    gradeDisplayDiv.className = 'mb-3 mt-4';
+                    gradeDisplayDiv.id = 'recyclability-grade-display';
+                    gradeDisplayDiv.innerHTML = `
+                        <label class="form-label fw-bold">Calculated Recyclability Grade:</label>
+                        <div class="alert alert-info mb-0" id="grade-result">
+                            <strong>Grade: <span id="grade-value">-</span></strong>
+                            <div class="form-text mt-2 small">Grade is automatically calculated based on your answers.</div>
+                        </div>
+                    `;
+                    formContainer.appendChild(gradeDisplayDiv);
+                    
+                    // Function to calculate grade based on selected answers
+                    function calculateRecyclabilityGrade() {
+                        const allSelectedInputs = formContainer.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+                        let hasRed = false;
+                        let hasOrange = false;
+                        let hasYellow = false;
+                        
+                        allSelectedInputs.forEach(input => {
+                            const value = input.value;
+                            // Check if the value contains NR (Not recyclable - Red)
+                            // Note: "N" alone might mean "No" (not necessarily bad), so we only check for "NR"
+                            if (value.includes('NR')) {
+                                hasRed = true;
+                            }
+                            // Check if the value contains L (Limited - Orange)
+                            if (value.includes('L')) {
+                                hasOrange = true;
+                            }
+                            // Check if the value contains R (Recyclable - Yellow)
+                            // But exclude NR (Not Recyclable)
+                            if (value.includes('R') && !value.includes('NR')) {
+                                hasYellow = true;
+                            }
+                        });
+                        
+                        // Determine grade based on priority: Red > Orange > Yellow > Green
+                        let grade = 'A'; // Default: only green (O) answers
+                        if (hasRed) {
+                            grade = 'D';
+                        } else if (hasOrange) {
+                            grade = 'C';
+                        } else if (hasYellow) {
+                            grade = 'B';
+                        }
+                        
+                        return grade;
+                    }
+                    
+                    // Function to update grade display
+                    function updateGradeDisplay() {
+                        const grade = calculateRecyclabilityGrade();
+                        const gradeValueSpan = document.getElementById('grade-value');
+                        const gradeResultDiv = document.getElementById('grade-result');
+                        
+                        if (gradeValueSpan) {
+                            gradeValueSpan.textContent = grade;
+                            
+                            // Update alert color based on grade
+                            gradeResultDiv.className = 'alert mb-0';
+                            if (grade === 'A') {
+                                gradeResultDiv.classList.add('alert-success');
+                            } else if (grade === 'B') {
+                                // Yellow/Amber for Grade B
+                                gradeResultDiv.style.backgroundColor = '#fff3cd';
+                                gradeResultDiv.style.borderColor = '#ffc107';
+                                gradeResultDiv.style.color = '#856404';
+                            } else if (grade === 'C') {
+                                // Orange for Grade C
+                                gradeResultDiv.style.backgroundColor = '#ffe0b2';
+                                gradeResultDiv.style.borderColor = '#ff9800';
+                                gradeResultDiv.style.color = '#e65100';
+                            } else if (grade === 'D') {
+                                gradeResultDiv.classList.add('alert-danger');
+                            } else {
+                                gradeResultDiv.classList.add('alert-info');
+                            }
+                        }
+                    }
+                    
+                    // Listen for changes in form inputs to update grade
+                    formContainer.addEventListener('change', function(e) {
+                        if (e.target.type === 'radio' || e.target.type === 'checkbox') {
+                            updateGradeDisplay();
+                        }
+                    });
+                    
+                    // Initial grade calculation
+                    updateGradeDisplay();
+                    
+                    // Store package info in form for submission
+                    if (form) {
+                        form.dataset.packageId = currentPackageId;
+                        form.dataset.packageLevel = currentPackageLevel;
+                    }
+                    
+                    // Update modal footer with submit button
+                    const modalFooter = recyclabilityModal.querySelector('.modal-footer');
+                    if (modalFooter) {
+                        // Remove existing submit button if any
+                        const existingSubmit = modalFooter.querySelector('.btn-primary');
+                        if (existingSubmit) {
+                            existingSubmit.remove();
+                        }
+                        
+                        // Add submit button
+                        const submitBtn = document.createElement('button');
+                        submitBtn.type = 'button'; // Changed from 'submit' to 'button' to handle manually
+                        submitBtn.className = 'btn btn-primary';
+                        submitBtn.textContent = 'Save Recyclability';
+                        submitBtn.id = 'saveRecyclabilityBtn';
+                        
+                        // Add click handler
+                        submitBtn.addEventListener('click', function() {
+                            handleRecyclabilitySubmit();
+                        });
+                        
+                        modalFooter.insertBefore(submitBtn, modalFooter.firstChild);
+                    }
+                })
+                .catch(error => {
+                    formContainer.innerHTML = `<p class="text-danger">Error loading form: ${error.message}</p>`;
+                });
+        } else {
+            const normalizedMat = normalizeMaterial(material);
+            formContainer.innerHTML = `
+                <p class="text-warning">
+                    No specific recyclability form found for material: "${material}" 
+                    (normalized: "${normalizedMat}").
+                </p>
+                <p class="text-muted small">Please check the material name in the packaging details.</p>
+            `;
+        }
+    });
+    
+    // Handle recyclability form submission
+    function handleRecyclabilitySubmit() {
+        if (!currentPackageId || !currentPackageLevel) {
+            alert('Error: Package information not found. Please close and reopen the modal.');
+            return;
+        }
+        
+        // Calculate recyclability grade from form answers
+        const formContainer = document.getElementById('recyclability-form-container');
+        if (!formContainer) {
+            alert('Error: Form container not found.');
+            return;
+        }
+        
+        const allSelectedInputs = formContainer.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+        let hasRed = false;
+        let hasOrange = false;
+        let hasYellow = false;
+        
+        allSelectedInputs.forEach(input => {
+            const value = input.value;
+            // Check if the value contains NR (Not recyclable - Red)
+            // Note: "N" alone might mean "No" (not necessarily bad), so we only check for "NR"
+            if (value.includes('NR')) {
+                hasRed = true;
+            }
+            // Check if the value contains L (Limited - Orange)
+            if (value.includes('L')) {
+                hasOrange = true;
+            }
+            // Check if the value contains R (Recyclable - Yellow)
+            // But exclude NR (Not Recyclable)
+            if (value.includes('R') && !value.includes('NR')) {
+                hasYellow = true;
+            }
+        });
+        
+        // Determine grade based on priority: Red > Orange > Yellow > Green
+        let recyclabilityGrade = 'A'; // Default: only green (O) answers
+        if (hasRed) {
+            recyclabilityGrade = 'D';
+        } else if (hasOrange) {
+            recyclabilityGrade = 'C';
+        } else if (hasYellow) {
+            recyclabilityGrade = 'B';
+        }
+        
+        if (!recyclabilityGrade) {
+            alert('Please complete the recyclability form.');
+            return;
+        }
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('packageId', currentPackageId);
+        formData.append('packageLevel', currentPackageLevel);
+        formData.append('recyclability', recyclabilityGrade);
+        
+        // Submit to backend
+        fetch('/update_packaging_recyclability', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Close modal and reload page
+                const modal = bootstrap.Modal.getInstance(recyclabilityModal);
+                if (modal) {
+                    modal.hide();
+                }
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Failed to save recyclability'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving recyclability.');
+        });
+    }
+    
+    // Also handle form submit event (in case form is submitted directly)
+    document.addEventListener('submit', function(event) {
+        const form = event.target.closest('#recyclabilityForm') || event.target;
+        if (form && form.id === 'recyclabilityForm') {
+            event.preventDefault();
+            handleRecyclabilitySubmit();
+        }
+    });
+
 });</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

@@ -84,9 +84,11 @@
                                 {% for activity in latest_activities %}
                                 <div class="list-group-item activity-item">
                                     <div class="d-flex w-100 justify-content-start align-items-center">
-                                        <i class="bi {{ get_activity_icon(activity.type) }} me-3"></i>
-                                        <div class="flex-grow-1">
-                                            <p class="mb-1">{{ activity.description }}</p>
+                                        <div class="activity-icon-container me-3">
+                                            <i class="bi {{ get_activity_icon(activity.type) }}"></i>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                                            <p class="mb-0">{{ activity.description }}</p>
                                             <small class="text-muted">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
                                         </div>
                                     </div>
@@ -297,12 +299,56 @@ document.addEventListener('DOMContentLoaded', function() {
             list.innerHTML = '<li class="list-group-item">Loading...</li>'; // Reset on open
 
             const getActivityIcon = (activityType) => {
-                if (typeof activityType !== 'string') return "bi-info-circle";
-                if (activityType.includes("product")) return "bi-qr-code";
-                if (activityType.includes("packaging")) return "bi-box";
-                if (activityType.includes("partner")) return "bi-person";
-                if (activityType.includes("connection")) return "bi-arrows-h";
-                if (activityType.includes("sales")) return "bi-cash-coin";
+                if (typeof activityType !== 'string') {
+                    return "bi-info-circle";
+                }
+
+                if (activityType === "product_creation") {
+                    return "bi-plus-square";
+                }
+                if (activityType === "product_update") {
+                    return "bi-pencil-square";
+                }
+                if (activityType === "product_deletion") {
+                    return "bi-trash";
+                }
+
+                if (activityType === "packaging_creation") {
+                    return "bi-box-seam";
+                }
+                if (activityType === "packaging_update") {
+                    return "bi-pencil-square";
+                }
+                if (activityType === "packaging_deletion") {
+                    return "bi-trash";
+                }
+
+                if (activityType === "partner_creation") {
+                    return "bi-person-plus";
+                }
+                if (activityType === "partner_update") {
+                    return "bi-pencil-square";
+                }
+                if (activityType === "partner_deletion") {
+                    return "bi-person-dash";
+                }
+
+                if (activityType.includes("connection")) {
+                    return "bi-link-45deg";
+                }
+                if (activityType.includes("sales")) {
+                    return "bi-graph-up-arrow";
+                }
+
+                // Fallback for general types
+                if (activityType.includes("product")) {
+                    return "bi-qr-code";
+                } else if (activityType.includes("packaging")) {
+                    return "bi-box";
+                } else if (activityType.includes("partner")) {
+                    return "bi-person";
+                }
+
                 return "bi-info-circle";
             };
 
