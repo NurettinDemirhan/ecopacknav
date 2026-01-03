@@ -9,9 +9,12 @@
 <div class="container-fluid p-2">
     <h1 class="dashboard-page-header mb-2">Dashboard</h1>
 
-    <div class="mb-2">
+    <div class="mb-2 d-flex gap-2">
         <button type="button" class="btn profiles-at-risk-btn" data-bs-toggle="modal" data-bs-target="#productStatusModal">
-            <i class="bi bi-exclamation-circle-fill"></i> PROFILES AT RISK: 12
+            <i class="bi bi-exclamation-circle-fill"></i> PROFILES AT RISK: <span id="at-risk-count-btn">0</span>
+        </button>
+        <button type="button" class="btn profiles-at-risk-btn" data-bs-toggle="modal" data-bs-target="#missingRecyclabilityModal">
+            <i class="bi bi-exclamation-circle-fill"></i> MISSING RECYCLABILITY: <span id="missing-recyclability-count-btn">0</span>
         </button>
     </div>
 
@@ -20,12 +23,64 @@
         <div class="card-body">
             <form id="filterForm" class="d-flex align-items-center flex-wrap">
                 <div class="me-3 mb-2 d-flex align-items-center">
-                    <label for="startDate" class="mb-0 me-2">From</label>
-                    <input type="month" id="startDate" name="start_date" class="form-control" value="{{ start_date or '' }}">
+                    <label for="startMonth" class="mb-0 me-2">From</label>
+                    <div class="d-flex gap-2">
+                        <select id="startMonth" name="start_month" class="form-select" style="width: auto;">
+                            <option value="">Month</option>
+                            {% set start_month = start_date.split('-')[1] if start_date and '-' in start_date else '' %}
+                            <option value="01" {% if start_month == '01' %}selected{% endif %}>January</option>
+                            <option value="02" {% if start_month == '02' %}selected{% endif %}>February</option>
+                            <option value="03" {% if start_month == '03' %}selected{% endif %}>March</option>
+                            <option value="04" {% if start_month == '04' %}selected{% endif %}>April</option>
+                            <option value="05" {% if start_month == '05' %}selected{% endif %}>May</option>
+                            <option value="06" {% if start_month == '06' %}selected{% endif %}>June</option>
+                            <option value="07" {% if start_month == '07' %}selected{% endif %}>July</option>
+                            <option value="08" {% if start_month == '08' %}selected{% endif %}>August</option>
+                            <option value="09" {% if start_month == '09' %}selected{% endif %}>September</option>
+                            <option value="10" {% if start_month == '10' %}selected{% endif %}>October</option>
+                            <option value="11" {% if start_month == '11' %}selected{% endif %}>November</option>
+                            <option value="12" {% if start_month == '12' %}selected{% endif %}>December</option>
+                        </select>
+                        <select id="startYear" name="start_year" class="form-select" style="width: auto;">
+                            <option value="">Year</option>
+                            {% set start_year = start_date.split('-')[0] if start_date and '-' in start_date else '' %}
+                            {% set current_year = datetime.now().year %}
+                            {% for year in range(current_year, current_year - 10, -1) %}
+                            <option value="{{ year }}" {% if start_year == year|string %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" id="startDate" name="start_date" value="{{ start_date or '' }}">
+                    </div>
                 </div>
                 <div class="me-3 mb-2 d-flex align-items-center">
-                    <label for="endDate" class="mb-0 me-2">Until</label>
-                    <input type="month" id="endDate" name="end_date" class="form-control" value="{{ end_date or '' }}">
+                    <label for="endMonth" class="mb-0 me-2">Until</label>
+                    <div class="d-flex gap-2">
+                        <select id="endMonth" name="end_month" class="form-select" style="width: auto;">
+                            <option value="">Month</option>
+                            {% set end_month = end_date.split('-')[1] if end_date and '-' in end_date else '' %}
+                            <option value="01" {% if end_month == '01' %}selected{% endif %}>January</option>
+                            <option value="02" {% if end_month == '02' %}selected{% endif %}>February</option>
+                            <option value="03" {% if end_month == '03' %}selected{% endif %}>March</option>
+                            <option value="04" {% if end_month == '04' %}selected{% endif %}>April</option>
+                            <option value="05" {% if end_month == '05' %}selected{% endif %}>May</option>
+                            <option value="06" {% if end_month == '06' %}selected{% endif %}>June</option>
+                            <option value="07" {% if end_month == '07' %}selected{% endif %}>July</option>
+                            <option value="08" {% if end_month == '08' %}selected{% endif %}>August</option>
+                            <option value="09" {% if end_month == '09' %}selected{% endif %}>September</option>
+                            <option value="10" {% if end_month == '10' %}selected{% endif %}>October</option>
+                            <option value="11" {% if end_month == '11' %}selected{% endif %}>November</option>
+                            <option value="12" {% if end_month == '12' %}selected{% endif %}>December</option>
+                        </select>
+                        <select id="endYear" name="end_year" class="form-select" style="width: auto;">
+                            <option value="">Year</option>
+                            {% set end_year = end_date.split('-')[0] if end_date and '-' in end_date else '' %}
+                            {% set current_year = datetime.now().year %}
+                            {% for year in range(current_year, current_year - 10, -1) %}
+                            <option value="{{ year }}" {% if end_year == year|string %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" id="endDate" name="end_date" value="{{ end_date or '' }}">
+                    </div>
                 </div>
                 {% for product_id in request.args.getlist('product_ids') %}
                 <input type="hidden" name="product_ids" value="{{ product_id }}">
@@ -167,6 +222,23 @@
     </div>
 </div>
 
+<!-- Missing Recyclability Modal -->
+<div class="modal fade" id="missingRecyclabilityModal" tabindex="-1" aria-labelledby="missingRecyclabilityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="missingRecyclabilityModalLabel">Packagings Missing Recyclability</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="missing-recyclability-list">
+                    <p class="text-muted">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- All Activities Modal -->
 <div class="modal fade" id="allActivitiesModal" tabindex="-1" aria-labelledby="allActivitiesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -272,6 +344,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Update hidden date fields when month/year selects change
+    function updateDateField(monthSelectId, yearSelectId, hiddenFieldId) {
+        const monthSelect = document.getElementById(monthSelectId);
+        const yearSelect = document.getElementById(yearSelectId);
+        const hiddenField = document.getElementById(hiddenFieldId);
+        
+        if (monthSelect && yearSelect && hiddenField) {
+            function updateValue() {
+                const month = monthSelect.value;
+                const year = yearSelect.value;
+                if (month && year) {
+                    hiddenField.value = `${year}-${month}`;
+                } else {
+                    hiddenField.value = '';
+                }
+            }
+            
+            monthSelect.addEventListener('change', updateValue);
+            yearSelect.addEventListener('change', updateValue);
+        }
+    }
+    
+    updateDateField('startMonth', 'startYear', 'startDate');
+    updateDateField('endMonth', 'endYear', 'endDate');
+    
     const searchInput = document.getElementById('productSearchInput');
     if (searchInput) {
         searchInput.addEventListener('input', function() {
@@ -392,5 +489,547 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Load product status count on page load
+function loadProductStatusCount() {
+    fetch('/get_product_status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+            
+            // Update button count
+            const atRiskBtn = document.querySelector('.profiles-at-risk-btn');
+            if (atRiskBtn) {
+                const countSpan = atRiskBtn.querySelector('#at-risk-count-btn') || atRiskBtn;
+                // Update button text
+                atRiskBtn.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> PROFILES AT RISK: ${data.summary.at_risk || 0}`;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching product status count:', error);
+        });
+}
+
+// Load count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadProductStatusCount();
+});
+
+// Product Status Modal Handler
+const productStatusModal = document.getElementById('productStatusModal');
+if (productStatusModal) {
+    productStatusModal.addEventListener('show.bs.modal', function () {
+        // Fetch product status data
+        fetch('/get_product_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+                
+                // Update summary counts
+                document.getElementById('at-risk-count').textContent = data.summary.at_risk || 0;
+                document.getElementById('incomplete-count').textContent = data.summary.incomplete || 0;
+                document.getElementById('compliant-count').textContent = data.summary.compliant || 0;
+                
+                // Update button count
+                const atRiskBtn = document.querySelector('.profiles-at-risk-btn');
+                if (atRiskBtn) {
+                    atRiskBtn.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> PROFILES AT RISK: ${data.summary.at_risk || 0}`;
+                }
+                
+                // Update status table
+                const statusTable = document.getElementById('status-table');
+                const existingRows = statusTable.querySelectorAll('.status-row:not(.status-row-head)');
+                existingRows.forEach(row => row.remove());
+                
+                // Define status rows
+                const statusRows = [
+                    {
+                        label: 'Products missing primary packaging',
+                        count: data.missing_primary.count,
+                        dataKey: 'missing_primary',
+                        type: 'products'
+                    },
+                    {
+                        label: 'Products missing secondary packaging',
+                        count: data.missing_secondary.count,
+                        dataKey: 'missing_secondary',
+                        type: 'products'
+                    },
+                    {
+                        label: 'Products missing tertiary packaging',
+                        count: data.missing_tertiary.count,
+                        dataKey: 'missing_tertiary',
+                        type: 'products'
+                    },
+                    {
+                        label: 'Products missing customer assignment',
+                        count: data.missing_customer.count,
+                        dataKey: 'missing_customer',
+                        type: 'products'
+                    },
+                    {
+                        label: 'Packagings missing supplier assignment',
+                        count: data.missing_supplier.count,
+                        dataKey: 'missing_supplier',
+                        type: 'packagings'
+                    }
+                ];
+                
+                statusRows.forEach(rowData => {
+                    const row = document.createElement('div');
+                    row.className = 'status-row';
+                    row.innerHTML = `
+                        <div>${rowData.label}</div>
+                        <div class="center">${rowData.count}</div>
+                        <div class="right">
+                            ${rowData.count > 0 ? `<a class="status-view" href="#" data-type="${rowData.type}" data-key="${rowData.dataKey}">View</a>` : '<span class="text-muted">-</span>'}
+                        </div>
+                    `;
+                    statusTable.appendChild(row);
+                });
+                
+                // Update dashboard button count
+                const dashboardBtn = document.querySelector('.profiles-at-risk-btn');
+                if (dashboardBtn) {
+                    dashboardBtn.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> PROFILES AT RISK: ${data.summary.at_risk || 0}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching product status:', error);
+            });
+    });
+}
+
+// Product List Modal Handler
+const productListModal = document.getElementById('productListModal');
+if (productListModal) {
+    // Handle view button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('status-view')) {
+            e.preventDefault();
+            const type = e.target.dataset.type;
+            const dataKey = e.target.dataset.key;
+            
+            // Fetch the data again to get the list
+            fetch('/get_product_status')
+                .then(response => response.json())
+                .then(data => {
+                    const items = data[dataKey][type === 'products' ? 'products' : 'packagings'];
+                    const listContainer = document.getElementById('product-list-items');
+                    const modalTitle = document.getElementById('productListModalLabel');
+                    
+                    // Update modal title
+                    if (type === 'products') {
+                        modalTitle.textContent = 'Products List';
+                    } else {
+                        modalTitle.textContent = 'Packagings List';
+                    }
+                    
+                    // Clear and populate list
+                    listContainer.innerHTML = '';
+                    if (items && items.length > 0) {
+                        items.forEach(item => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item';
+                            li.textContent = item.product_code || item.package_code || 'N/A';
+                            listContainer.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item text-muted';
+                        li.textContent = 'No items found.';
+                        listContainer.appendChild(li);
+                    }
+                    
+                    // Show modal
+                    const modal = new bootstrap.Modal(productListModal);
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching product list:', error);
+                });
+        }
+    });
+}
+
+// Missing Recyclability Modal Handler
+const missingRecyclabilityModal = document.getElementById('missingRecyclabilityModal');
+if (missingRecyclabilityModal) {
+    missingRecyclabilityModal.addEventListener('show.bs.modal', function () {
+        const listContainer = document.getElementById('missing-recyclability-list');
+        listContainer.innerHTML = '<p class="text-muted">Loading...</p>';
+        
+        fetch('/get_missing_recyclability')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    listContainer.innerHTML = `<p class="text-danger">Error: ${data.error}</p>`;
+                    return;
+                }
+                
+                // Update button count
+                const countBtn = document.getElementById('missing-recyclability-count-btn');
+                if (countBtn) {
+                    countBtn.textContent = data.count || 0;
+                }
+                
+                // Populate list
+                listContainer.innerHTML = '';
+                if (data.packagings && data.packagings.length > 0) {
+                    const table = document.createElement('table');
+                    table.className = 'table table-hover';
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Package Code</th>
+                                <th>Level</th>
+                                <th>Material</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="missing-recyclability-table-body">
+                        </tbody>
+                    `;
+                    
+                    const tbody = table.querySelector('#missing-recyclability-table-body');
+                    data.packagings.forEach(pkg => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${pkg.package_code}</td>
+                            <td>${pkg.level}</td>
+                            <td>${pkg.material || '—'}</td>
+                            <td class="text-center">
+                                <i class="bi bi-exclamation-circle-fill text-danger recyclability-trigger"
+                                   title="Set Recyclability"
+                                   style="cursor: pointer; font-size: 1.2rem;"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#recyclabilityModal"
+                                   data-package-id="${pkg._id}"
+                                   data-package-level="${pkg.level}"
+                                   data-material="${pkg.material || ''}"></i>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    listContainer.appendChild(table);
+                    
+                    // Close missing recyclability modal when recyclability modal opens
+                    const recyclabilityTriggers = listContainer.querySelectorAll('.recyclability-trigger');
+                    recyclabilityTriggers.forEach(trigger => {
+                        trigger.addEventListener('click', function() {
+                            // Close the missing recyclability modal
+                            const modal = bootstrap.Modal.getInstance(missingRecyclabilityModal);
+                            if (modal) {
+                                modal.hide();
+                            }
+                        });
+                    });
+                } else {
+                    listContainer.innerHTML = '<p class="text-muted text-center">All packagings have recyclability set.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching missing recyclability:', error);
+                listContainer.innerHTML = '<p class="text-danger">Failed to load data.</p>';
+            });
+    });
+    
+    // Load count on page load
+    fetch('/get_missing_recyclability')
+        .then(response => response.json())
+        .then(data => {
+            const countBtn = document.getElementById('missing-recyclability-count-btn');
+            if (countBtn) {
+                countBtn.textContent = data.count || 0;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching missing recyclability count:', error);
+        });
+}
+
+// Recyclability Modal Handler for Dashboard
+// (Same handler as in products_page.html, needed for dashboard to work)
+if (typeof window.showNextQuestion === 'undefined') {
+    // showNextQuestion function for recyclability forms
+    window.showNextQuestion = function(element) {
+        const nextQuestionClass = element.dataset.next;
+        if (!nextQuestionClass) return;
+        
+        const currentQuestion = element.closest('.question-block');
+        if (!currentQuestion) return;
+        
+        const formContainer = element.closest('form') || 
+                             element.closest('[class*="questionnaire"]') || 
+                             element.closest('#recyclability-form-container');
+        
+        if (!formContainer) return;
+        
+        const nextQuestion = formContainer.querySelector('.' + nextQuestionClass);
+        if (!nextQuestion) return;
+        
+        if (element.type === 'radio') {
+            if (element.checked) {
+                const radioName = element.name;
+                const allRadiosInGroup = formContainer.querySelectorAll(`input[type="radio"][name="${radioName}"]`);
+                
+                allRadiosInGroup.forEach(radio => {
+                    if (radio !== element) {
+                        const otherNextClass = radio.dataset.next;
+                        if (otherNextClass) {
+                            const otherNextQuestion = formContainer.querySelector('.' + otherNextClass);
+                            if (otherNextQuestion && otherNextQuestion !== nextQuestion) {
+                                hideQuestionAndSubsequent(otherNextQuestion, formContainer);
+                            }
+                        }
+                    }
+                });
+                
+                nextQuestion.classList.remove('d-none');
+                setTimeout(() => {
+                    nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        } else if (element.type === 'checkbox') {
+            if (element.checked) {
+                nextQuestion.classList.remove('d-none');
+            } else {
+                const currentQuestionCheckboxes = currentQuestion.querySelectorAll(`input[type="checkbox"][data-next="${nextQuestionClass}"]`);
+                let anyChecked = false;
+                currentQuestionCheckboxes.forEach(cb => {
+                    if (cb.checked) anyChecked = true;
+                });
+                if (!anyChecked) {
+                    hideQuestionAndSubsequent(nextQuestion, formContainer);
+                }
+            }
+            if (element.checked) {
+                setTimeout(() => {
+                    nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+    };
+    
+    function hideQuestionAndSubsequent(question, formContainer) {
+        if (!question) return;
+        question.classList.add('d-none');
+        const allQuestions = Array.from(formContainer.querySelectorAll('.question-block'));
+        const currentIndex = allQuestions.indexOf(question);
+        for (let i = currentIndex + 1; i < allQuestions.length; i++) {
+            allQuestions[i].classList.add('d-none');
+        }
+    }
+}
+
+// Recyclability Modal Handler
+const recyclabilityModal = document.getElementById('recyclabilityModal');
+if (recyclabilityModal) {
+    let currentPackageId = null;
+    let currentPackageLevel = null;
+    
+    recyclabilityModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        if (!button) return;
+        
+        currentPackageId = button.dataset.packageId;
+        currentPackageLevel = button.dataset.packageLevel;
+        let material = button.dataset.material;
+        const formContainer = document.getElementById('recyclability-form-container');
+        if (!formContainer) return;
+        
+        formContainer.innerHTML = '<p>Loading form...</p>';
+        
+        function normalizeMaterial(mat) {
+            if (!mat) return '';
+            let normalized = mat.toLowerCase().trim();
+            if (normalized.includes(',')) {
+                normalized = normalized.split(',')[0].trim();
+            }
+            return normalized;
+        }
+        
+        function findFormFile(material) {
+            const normalized = normalizeMaterial(material);
+            if (normalized.includes('beverage carton')) return 'beverage_carton.html';
+            if (normalized.includes('flexible plastic pp') || normalized.includes('flexible pp')) return 'flexible_plastic_pp.html';
+            if (normalized.includes('flexible plastic pe') || normalized.includes('flexible pe')) return 'flexible_plastic_pe.html';
+            if (normalized.includes('flexible plastic other') || normalized.includes('flexible other')) return 'flexible_plastic_other.html';
+            if (normalized.includes('rigid plastic pet bottle') || normalized.includes('rigid pet bottle')) return 'rigid_plastic_pet_bottle.html';
+            if (normalized.includes('rigid plastic pe/pp') || normalized.includes('rigid pe/pp')) return 'rigid_plastic_pe_pp.html';
+            if (normalized.includes('rigid plastic other pet') || normalized.includes('rigid other pet')) return 'rigid_plastic_other_pet.html';
+            if (normalized.includes('rigid plastic other plastic') || normalized.includes('rigid other plastic')) return 'rigid_plastic_other_plastic.html';
+            if (normalized.includes('metal aluminium') || normalized.includes('metal aluminum')) return 'metal_aluminium.html';
+            if (normalized.includes('metal steel')) return 'metal_steel.html';
+            if (normalized.includes('paper') || normalized.includes('cardboard')) return 'paper_cardboard.html';
+            if (normalized.includes('glass')) return 'glass.html';
+            return null;
+        }
+        
+        const formFileName = findFormFile(material);
+        
+        if (formFileName) {
+            fetch(`/get_recyclability_form/${formFileName}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Form not found');
+                    return response.text();
+                })
+                .then(html => {
+                    const form = document.getElementById('recyclabilityForm');
+                    formContainer.innerHTML = html;
+                    
+                    const mainContainer = formContainer.querySelector('[class*="questionnaire"]');
+                    if (mainContainer) mainContainer.classList.remove('d-none');
+                    
+                    const allQuestions = formContainer.querySelectorAll('.question-block');
+                    allQuestions.forEach(q => q.classList.add('d-none'));
+                    
+                    let firstQuestion = Array.from(allQuestions).find(q => /question-1-/.test(q.className));
+                    if (!firstQuestion && allQuestions.length > 0) firstQuestion = allQuestions[0];
+                    if (firstQuestion) firstQuestion.classList.remove('d-none');
+                    
+                    const gradeDisplayDiv = document.createElement('div');
+                    gradeDisplayDiv.className = 'mb-3 mt-4';
+                    gradeDisplayDiv.id = 'recyclability-grade-display';
+                    gradeDisplayDiv.innerHTML = `
+                        <label class="form-label fw-bold">Calculated Recyclability Grade:</label>
+                        <div class="alert alert-info mb-0" id="grade-result">
+                            <strong>Grade: <span id="grade-value">-</span></strong>
+                            <div class="form-text mt-2 small">Grade is automatically calculated based on your answers.</div>
+                        </div>
+                    `;
+                    formContainer.appendChild(gradeDisplayDiv);
+                    
+                    function calculateRecyclabilityGrade() {
+                        const allSelectedInputs = formContainer.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+                        let hasRed = false, hasOrange = false, hasYellow = false;
+                        allSelectedInputs.forEach(input => {
+                            const value = input.value;
+                            if (value.includes('NR')) hasRed = true;
+                            if (value.includes('L')) hasOrange = true;
+                            if (value.includes('R') && !value.includes('NR')) hasYellow = true;
+                        });
+                        if (hasRed) return 'D';
+                        if (hasOrange) return 'C';
+                        if (hasYellow) return 'B';
+                        return 'A';
+                    }
+                    
+                    function updateGradeDisplay() {
+                        const grade = calculateRecyclabilityGrade();
+                        const gradeValueSpan = document.getElementById('grade-value');
+                        const gradeResultDiv = document.getElementById('grade-result');
+                        if (gradeValueSpan) {
+                            gradeValueSpan.textContent = grade;
+                            gradeResultDiv.className = 'alert mb-0';
+                            if (grade === 'A') gradeResultDiv.classList.add('alert-success');
+                            else if (grade === 'B') {
+                                gradeResultDiv.style.backgroundColor = '#fff3cd';
+                                gradeResultDiv.style.borderColor = '#ffc107';
+                                gradeResultDiv.style.color = '#856404';
+                            } else if (grade === 'C') {
+                                gradeResultDiv.style.backgroundColor = '#ffe0b2';
+                                gradeResultDiv.style.borderColor = '#ff9800';
+                                gradeResultDiv.style.color = '#e65100';
+                            } else if (grade === 'D') gradeResultDiv.classList.add('alert-danger');
+                            else gradeResultDiv.classList.add('alert-info');
+                        }
+                    }
+                    
+                    formContainer.addEventListener('change', function(e) {
+                        if (e.target.type === 'radio' || e.target.type === 'checkbox') {
+                            updateGradeDisplay();
+                        }
+                    });
+                    updateGradeDisplay();
+                    
+                    if (form) {
+                        form.dataset.packageId = currentPackageId;
+                        form.dataset.packageLevel = currentPackageLevel;
+                    }
+                    
+                    const modalFooter = recyclabilityModal.querySelector('.modal-footer');
+                    if (modalFooter) {
+                        const existingSubmit = modalFooter.querySelector('.btn-primary');
+                        if (existingSubmit) existingSubmit.remove();
+                        
+                        const submitBtn = document.createElement('button');
+                        submitBtn.type = 'button';
+                        submitBtn.className = 'btn btn-primary';
+                        submitBtn.textContent = 'Save Recyclability';
+                        submitBtn.id = 'saveRecyclabilityBtn';
+                        submitBtn.addEventListener('click', function() {
+                            handleRecyclabilitySubmit();
+                        });
+                        modalFooter.insertBefore(submitBtn, modalFooter.firstChild);
+                    }
+                })
+                .catch(error => {
+                    formContainer.innerHTML = `<p class="text-danger">Error loading form: ${error.message}</p>`;
+                });
+        } else {
+            formContainer.innerHTML = `<p class="text-warning">No specific recyclability form for material: "${material}".</p>`;
+        }
+    });
+    
+    function handleRecyclabilitySubmit() {
+        if (!currentPackageId || !currentPackageLevel) {
+            alert('Error: Package information not found.');
+            return;
+        }
+        
+        const formContainer = document.getElementById('recyclability-form-container');
+        if (!formContainer) {
+            alert('Error: Form container not found.');
+            return;
+        }
+        
+        const allSelectedInputs = formContainer.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+        let hasRed = false, hasOrange = false, hasYellow = false;
+        
+        allSelectedInputs.forEach(input => {
+            const value = input.value;
+            if (value.includes('NR')) hasRed = true;
+            if (value.includes('L')) hasOrange = true;
+            if (value.includes('R') && !value.includes('NR')) hasYellow = true;
+        });
+        
+        let recyclabilityGrade = 'A';
+        if (hasRed) recyclabilityGrade = 'D';
+        else if (hasOrange) recyclabilityGrade = 'C';
+        else if (hasYellow) recyclabilityGrade = 'B';
+        
+        const formData = new FormData();
+        formData.append('packageId', currentPackageId);
+        formData.append('packageLevel', currentPackageLevel);
+        formData.append('recyclability', recyclabilityGrade);
+        
+        fetch('/update_packaging_recyclability', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const modal = bootstrap.Modal.getInstance(recyclabilityModal);
+                if (modal) modal.hide();
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Failed to save recyclability'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving recyclability.');
+        });
+    }
+}
 </script>
 {% endblock %}

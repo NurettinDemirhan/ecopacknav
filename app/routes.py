@@ -987,7 +987,7 @@ def dashboard():
     # --- Fetch Latest Activities ---
     latest_activities = list(mongo.db.activities.find(
         {"owner": owner_id}
-    ).sort("timestamp", -1).limit(4))
+    ).sort("timestamp", -1).limit(10))
 
     return render_template(
         'dashboard_page.html',
@@ -1598,6 +1598,148 @@ def get_all_packagings_json():
             p["level"] = level
             all_packagings.append(p)
     return jsonify(all_packagings)
+
+@main_bp.get("/get_missing_recyclability")
+@login_required
+def get_missing_recyclability():
+    """
+    Returns list of packagings that don't have recyclability set.
+    """
+    try:
+        owner_oid = ObjectId(current_user.id)
+        
+        missing_recyclability = []
+        
+        # Check all packaging levels
+        collections = {
+            "Primary": mongo.db.primary_packagings,
+            "Secondary": mongo.db.secondary_packagings,
+            "Tertiary": mongo.db.tertiary_packagings
+        }
+        
+        for level, collection in collections.items():
+            packagings = collection.find(
+                {"owner": owner_oid},
+                {"package_code": 1, "recyclability": 1, "materials": 1}
+            )
+            
+            for pkg in packagings:
+                recyclability = pkg.get("recyclability")
+                # Check if recyclability is missing, empty, or not a valid grade
+                if not recyclability or recyclability.strip() == "" or recyclability == "—":
+                    # Get material for the recyclability form
+                    material = pick_material_text(pkg)
+                    
+                    missing_recyclability.append({
+                        "_id": str(pkg["_id"]),
+                        "package_code": pkg.get("package_code", "N/A"),
+                        "level": level,
+                        "material": material
+                    })
+        
+        return jsonify({
+            "count": len(missing_recyclability),
+            "packagings": missing_recyclability
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@main_bp.get("/get_product_status")
+@login_required
+def get_product_status():
+    """
+    Returns product status statistics including missing connections.
+    """
+    try:
+        owner_oid = ObjectId(current_user.id)
+        
+        # Get all products
+        all_products = list(mongo.db.products.find(
+            {"owner": owner_oid},
+            {"product_code": 1, "connections": 1}
+        ))
+        
+        # Get all packagings
+        all_primary = list(mongo.db.primary_packagings.find({"owner": owner_oid}, {"package_code": 1, "supplier": 1}))
+        all_secondary = list(mongo.db.secondary_packagings.find({"owner": owner_oid}, {"package_code": 1, "supplier": 1}))
+        all_tertiary = list(mongo.db.tertiary_packagings.find({"owner": owner_oid}, {"package_code": 1, "supplier": 1}))
+        all_packagings = all_primary + all_secondary + all_tertiary
+        
+        # Analyze products
+        missing_primary = []
+        missing_secondary = []
+        missing_tertiary = []
+        missing_customer = []
+        
+        for product in all_products:
+            connections = product.get("connections", {})
+            product_info = {
+                "_id": str(product["_id"]),
+                "product_code": product.get("product_code", "N/A")
+            }
+            
+            if not connections.get("primary_package"):
+                missing_primary.append(product_info)
+            if not connections.get("secondary_package"):
+                missing_secondary.append(product_info)
+            if not connections.get("tertiary_package"):
+                missing_tertiary.append(product_info)
+            if not connections.get("customer"):
+                missing_customer.append(product_info)
+        
+        # Analyze packagings missing supplier
+        missing_supplier = []
+        for pkg in all_packagings:
+            if not pkg.get("supplier"):
+                missing_supplier.append({
+                    "_id": str(pkg["_id"]),
+                    "package_code": pkg.get("package_code", "N/A")
+                })
+        
+        # Calculate totals
+        total_at_risk = len(set(
+            [p["_id"] for p in missing_primary] +
+            [p["_id"] for p in missing_secondary] +
+            [p["_id"] for p in missing_tertiary] +
+            [p["_id"] for p in missing_customer]
+        ))
+        
+        total_incomplete = total_at_risk  # Same for now
+        total_compliant = len(all_products) - total_at_risk
+        
+        return jsonify({
+            "summary": {
+                "at_risk": total_at_risk,
+                "incomplete": total_incomplete,
+                "compliant": total_compliant
+            },
+            "missing_primary": {
+                "count": len(missing_primary),
+                "products": missing_primary
+            },
+            "missing_secondary": {
+                "count": len(missing_secondary),
+                "products": missing_secondary
+            },
+            "missing_tertiary": {
+                "count": len(missing_tertiary),
+                "products": missing_tertiary
+            },
+            "missing_customer": {
+                "count": len(missing_customer),
+                "products": missing_customer
+            },
+            "missing_supplier": {
+                "count": len(missing_supplier),
+                "packagings": missing_supplier
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @main_bp.get("/get_partner_details/<partner_id>")
 @login_required
