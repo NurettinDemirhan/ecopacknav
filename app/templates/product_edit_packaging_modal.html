@@ -64,6 +64,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const productId = button.getAttribute('data-product-id');
         productIdInput.value = productId;
         editPackagingForm.action = `/update_product_packaging_connections/${productId}`;
+        
+        // Pre-select current packaging connections
+        fetch(`/get_product_details/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.connections) {
+                    const primarySelect = document.getElementById('primaryPackage');
+                    const secondarySelect = document.getElementById('secondaryPackage');
+                    const tertiarySelect = document.getElementById('tertiaryPackage');
+                    
+                    if (primarySelect && data.connections.primary_package) {
+                        primarySelect.value = data.connections.primary_package;
+                    }
+                    if (secondarySelect && data.connections.secondary_package) {
+                        secondarySelect.value = data.connections.secondary_package;
+                    }
+                    if (tertiarySelect && data.connections.tertiary_package) {
+                        tertiarySelect.value = data.connections.tertiary_package;
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching product details:', error));
     });
 });
 </script>

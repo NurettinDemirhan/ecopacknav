@@ -26,6 +26,21 @@ h1 {
 .btn-primary:hover{
     background-color: #0e5b69;   
 }
+
+/* Checkbox styling to match primary button color */
+#primaryCheck:checked,
+#secondaryCheck:checked,
+#tertiaryCheck:checked {
+    background-color: #0a4b57;
+    border-color: #0a4b57;
+}
+
+#primaryCheck:focus,
+#secondaryCheck:focus,
+#tertiaryCheck:focus {
+    border-color: #0a4b57;
+    box-shadow: 0 0 0 0.25rem rgba(10, 75, 87, 0.25);
+}
 .dashboard-card .card-header {
     background-color: #fff;
     border-bottom: none;
@@ -52,9 +67,30 @@ h1 {
     width: 100%;
     height: 100%;
 }
-#productFilterModal .modal-body, #allActivitiesModal .modal-body {
+#productFilterModal .modal-body {
     max-height: 50vh;
     overflow-y: auto;
+}
+
+/* All Activities Modal - taller and centered */
+#allActivitiesModal .modal-dialog {
+    max-width: 60%;
+    height: 80vh;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+
+#allActivitiesModal .modal-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#allActivitiesModal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 .activity-list {
     flex: 1;
@@ -126,3 +162,142 @@ h1 {
     white-space: nowrap; /* Prevent wrapping */
     padding-left: 1rem; /* Space between description and date */
 }
+
+/* Custom styles for Product Detail Offcanvas */
+.offcanvas-custom {
+    --bs-offcanvas-width: 600px;
+    background-color: #f0f2f5; /* Light grey background for the body */
+    z-index: 1060 !important; /* Higher than modal (1055) to appear in front */
+}
+
+/* Ensure offcanvas backdrop is also above modal */
+.offcanvas-backdrop {
+    z-index: 1059 !important; /* Just below offcanvas but above modal */
+}
+
+.offcanvas-custom .offcanvas-header {
+    background-color: #083c46; /* Matching sidebar background */
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 0 15px; /* Rounded bottom-left corner */
+}
+
+.offcanvas-custom .offcanvas-title {
+    font-size: 1.5rem; /* Larger title font */
+    font-weight: 500;
+}
+
+.offcanvas-custom .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.offcanvas-custom .offcanvas-body {
+    font-size: 1.1rem; /* Larger general font size */
+    padding: 1.5rem;
+}
+
+.offcanvas-custom .detail-section {
+    background-color: #ffffff;
+    border-radius: 12px; /* Rounded corners for item sections */
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden; /* Keeps child header corners rounded */
+}
+
+.offcanvas-custom .detail-section-header {
+    background-color: #083c46; /* Matching sidebar background */
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.offcanvas-custom .detail-section-header h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.offcanvas-custom .detail-section-body {
+    padding: 1rem 1.5rem;
+}
+
+.offcanvas-custom .detail-section-body p {
+    margin-bottom: 0.5rem;
+}
+
+.offcanvas-custom .packaging-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.offcanvas-custom .packaging-table th,
+.offcanvas-custom .packaging-table td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.offcanvas-custom .packaging-table tr:last-child td {
+    border-bottom: none;
+}
+
+.offcanvas-custom .packaging-table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#offcanvas-product-code-container,
+#offcanvas-packaging-code-container {
+    padding: 1rem 1.5rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.detail-line {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+}
+
+.detail-line:last-child {
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+#offcanvas-product-code,
+#offcanvas-sec-product-code,
+#offcanvas-product-category,
+#offcanvas-packaging-code {
+    font-weight: 500;
+    color: #222;
+}
+
+#offcanvas-sec-product-code,
+#offcanvas-product-category {
+    color: #6c757d;
+}
+
+/* Grades for recyclability */
+.grade {
+    font-weight: 600;
+}
+
+.grade-a { color: #3aa76d; }
+.grade-b { color: #d4a017; }
+.grade-c { color: #e67e22; }
+.grade-d { color: #c0392b; }

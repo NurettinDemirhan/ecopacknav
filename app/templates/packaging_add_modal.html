@@ -44,6 +44,7 @@
                             <option value="rectangular">Rectangular Prism</option>
                             <option value="cylinder">Cylinder</option>
                             <option value="sphere">Sphere</option>
+                            <option value="other">Other</option>
                         </select>
                         <div class="invalid-feedback">Please select a shape.</div>
                     </div>
@@ -66,10 +67,20 @@
                             <div class="col-md-6"><label class="form-label">Radius (cm) <span class="text-danger">*</span></label><input type="number" class="form-control" name="sphRadius"><div class="invalid-feedback">Required.</div></div>
                         </div>
                     </div>
+                    <div id="otherFields" class="d-none mb-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6"><label class="form-label">Volume (cm³) <span class="text-danger">*</span></label><input type="number" class="form-control" name="volume" step="0.01"><div class="invalid-feedback">Required.</div></div>
+                        </div>
+                    </div>
 
                     <!-- Recyclability (Not Mandatory) -->
                     <div class="mb-3">
-                        <label for="recyclability" class="form-label">Recyclability</label>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <label for="recyclability" class="form-label mb-0">Recyclability</label>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="resetRecyclabilityBtn" title="Reset Recyclability">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                        </div>
                         <select class="form-select" id="recyclability" name="recyclability">
                             <option value="">-- Select --</option>
                             <option value="A">A</option>
@@ -103,7 +114,7 @@
                                 <div class="col-1"><button type="button" class="btn-close d-none" aria-label="Close" onclick="removeMaterial(this)"></button></div>
                             </div>
                             <div class="row g-2 mb-2">
-                                <div class="col-md-6"><label class="form-label">Component Type <span class="text-danger">*</span></label><select class="form-select" name="packageComponent[]"><option value="">-- Select --</option><option value="Bottle">Bottle</option><option value="Cap">Cap</option><option value="Label">Label</option><option value="Box">Box</option><option value="Wrapper">Wrapper</option><option value="Other">Other</option></select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-6"><label class="form-label">Component Type <span class="text-danger">*</span></label><select class="form-select" name="packageComponent[]"><option value="">-- Select --</option>{% for item in component_types %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
                                 <div class="col-md-6"><label class="form-label">Material <span class="text-danger">*</span></label><select class="form-select" name="material[]"><option value="">-- Select --</option><option value="paper/cardboard">Paper/Cardboard</option><option value="beverage carton">Beverage Carton</option><option value="glass">Glass</option><option value="metal aluminium">Metal Aluminium</option><option value="metal steel">Metal Steel</option><option value="flexible plastic pe">Flexible Plastic PE</option><option value="flexible plastic pp">Flexible Plastic PP</option><option value="flexible plastic other">Flexible Plastic Other</option><option value="rigid plastic pet bottle">Rigid Plastic PET Bottle</option><option value="rigid plastic pe/pp">Rigid Plastic PE/PP</option><option value="rigid plastic other pet">Rigid Plastic Other PET</option><option value="rigid plastic other plastic">Rigid Plastic Other Plastic</option></select><div class="invalid-feedback">Required.</div></div>
                             </div>
                             <div class="row g-2 mb-2">
@@ -112,8 +123,8 @@
                             </div>
                             <div class="row g-2 mb-2">
                                 <div class="col-md-4"><label class="form-label">Thickness (µm) <span class="text-danger">*</span></label><input type="number" name="thicknessMicrons[]" class="form-control"><div class="invalid-feedback">Required.</div></div>
-                                <div class="col-md-4"><label class="form-label">Adhesive <span class="text-danger">*</span></label><select name="adhesiveType[]" class="form-select"><option value="">-- Select --</option><option value="None">None</option><option value="Hot-melt">Hot-melt</option><option value="Acrylic">Acrylic</option></select><div class="invalid-feedback">Required.</div></div>
-                                <div class="col-md-4"><label class="form-label">Food Contact <span class="text-danger">*</span></label><select name="foodContact[]" class="form-select"><option value="">-- Select --</option><option value="No">No</option><option value="Yes (dry)">Yes (dry)</option><option value="Yes (indirect)">Yes (indirect)</option></select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-4"><label class="form-label">Adhesive <span class="text-danger">*</span></label><select name="adhesiveType[]" class="form-select"><option value="">-- Select --</option>{% for item in adhesives %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-4"><label class="form-label">Food Contact <span class="text-danger">*</span></label><select name="foodContact[]" class="form-select"><option value="">-- Select --</option>{% for item in food_contacts %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
                             </div>
                         </div>
                     </div>
@@ -248,14 +259,17 @@ function toggleShapeFields(selectElement) {
     const rectangular = modal.querySelector('#rectangularFields');
     const cylinder = modal.querySelector('#cylinderFields');
     const sphere = modal.querySelector('#sphereFields');
+    const other = modal.querySelector('#otherFields');
     
     rectangular.classList.add('d-none');
     cylinder.classList.add('d-none');
     sphere.classList.add('d-none');
+    if (other) other.classList.add('d-none');
 
     if (shape === 'rectangular') rectangular.classList.remove('d-none');
     if (shape === 'cylinder') cylinder.classList.remove('d-none');
     if (shape === 'sphere') sphere.classList.remove('d-none');
+    if (shape === 'other' && other) other.classList.remove('d-none');
 }
 
 function addMaterial() {
@@ -306,4 +320,16 @@ function updateRemoveButtons() {
 }
 
 document.addEventListener('DOMContentLoaded', updateRemoveButtons);
+
+// Reset Recyclability button handler
+document.addEventListener('DOMContentLoaded', function() {
+    const resetRecyclabilityBtn = document.getElementById('resetRecyclabilityBtn');
+    const recyclabilitySelect = document.getElementById('recyclability');
+    
+    if (resetRecyclabilityBtn && recyclabilitySelect) {
+        resetRecyclabilityBtn.addEventListener('click', function() {
+            recyclabilitySelect.value = '';
+        });
+    }
+});
 </script>

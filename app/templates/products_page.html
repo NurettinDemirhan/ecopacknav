@@ -716,6 +716,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('rectangularFields').classList.add('d-none');
             document.getElementById('cylinderFields').classList.add('d-none');
             document.getElementById('sphereFields').classList.add('d-none');
+            const otherFields = document.getElementById('otherFields');
+            if (otherFields) otherFields.classList.add('d-none');
             
             // Reset materials to a single blank group
             const materialsContainer = document.getElementById('materialsContainer');
@@ -772,6 +774,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                         packagingForm.querySelector('[name="cylRadius"]').value = data.dimensions.radius || '';
                                     } else if (data.package_shape === 'sphere') {
                                         packagingForm.querySelector('[name="sphRadius"]').value = data.dimensions.radius || '';
+                                    } else if (data.package_shape === 'other') {
+                                        const volumeInput = packagingForm.querySelector('[name="volume"]');
+                                        if (volumeInput) {
+                                            volumeInput.value = data.dimensions.volume || data.volume_cm3 || '';
+                                        }
                                     }
                                 }
                             }
@@ -973,7 +980,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     };
-    
+
     // Recyclability Modal Handler
     const recyclabilityModal = document.getElementById('recyclabilityModal');
     let currentPackageId = null;
@@ -986,7 +993,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let material = button.dataset.material;
         const formContainer = document.getElementById('recyclability-form-container');
         formContainer.innerHTML = '<p>Loading form...</p>'; // Placeholder
-        
+
         // Debug: log material value
         console.log('Material received:', material);
 

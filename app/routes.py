@@ -37,6 +37,10 @@ def calculate_volume(shape, dimensions):
         radius = _safe_float(dimensions.get('radius'))
         if radius is not None:
             return (4 / 3) * math.pi * (radius ** 3)
+    elif shape == 'other':
+        volume = _safe_float(dimensions.get('volume'))
+        if volume is not None:
+            return volume
     return None
 
 def _log_activity(activity_type: str, description: str):
@@ -207,6 +211,11 @@ def products():
     all_primary_packagings = list(mongo.db.primary_packagings.find({"owner": user_oid}))
     all_secondary_packagings = list(mongo.db.secondary_packagings.find({"owner": user_oid}))
     all_tertiary_packagings = list(mongo.db.tertiary_packagings.find({"owner": user_oid}))
+    
+    # Fetch data setup items
+    component_types = list(mongo.db.component_types.find({"owner": user_oid}).sort("name", 1))
+    adhesives = list(mongo.db.adhesives.find({"owner": user_oid}).sort("name", 1))
+    food_contacts = list(mongo.db.food_contacts.find({"owner": user_oid}).sort("name", 1))
 
     return render_template(
         "products_page.html",
@@ -215,7 +224,10 @@ def products():
         partners=partners,
         all_primary_packagings=all_primary_packagings,
         all_secondary_packagings=all_secondary_packagings,
-        all_tertiary_packagings=all_tertiary_packagings
+        all_tertiary_packagings=all_tertiary_packagings,
+        component_types=component_types,
+        adhesives=adhesives,
+        food_contacts=food_contacts
     )
 
 
@@ -392,6 +404,8 @@ def add_packaging():
             dimensions['radius'] = request.form.get('cylRadius')
         elif package_shape == 'sphere':
             dimensions['radius'] = request.form.get('sphRadius')
+        elif package_shape == 'other':
+            dimensions['volume'] = request.form.get('volume')
         
         # --- Material Composition ---
         components = request.form.getlist('packageComponent[]')
@@ -494,6 +508,9 @@ def update_product_packaging_connections(product_id):
         product = mongo.db.products.find_one({"_id": product_oid, "owner": owner_oid})
         if not product:
             flash("Product not found.", "danger")
+            referer = request.headers.get('Referer', '')
+            if '/dashboard' in referer:
+                return redirect(url_for("main.dashboard"))
             return redirect(url_for("main.products"))
 
         old_connections = product.get("connections", {})
@@ -557,6 +574,10 @@ def update_product_packaging_connections(product_id):
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "danger")
 
+    # Redirect based on referer
+    referer = request.headers.get('Referer', '')
+    if '/dashboard' in referer:
+        return redirect(url_for("main.dashboard"))
     return redirect(url_for("main.products"))
 
 
@@ -570,6 +591,9 @@ def update_product_customer_connection(product_id):
         product = mongo.db.products.find_one({"_id": product_oid, "owner": owner_oid})
         if not product:
             flash("Product not found.", "danger")
+            referer = request.headers.get('Referer', '')
+            if '/dashboard' in referer:
+                return redirect(url_for("main.dashboard"))
             return redirect(url_for("main.products"))
 
         old_customer_id = product.get("connections", {}).get("customer")
@@ -607,6 +631,10 @@ def update_product_customer_connection(product_id):
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "danger")
 
+    # Redirect based on referer
+    referer = request.headers.get('Referer', '')
+    if '/dashboard' in referer:
+        return redirect(url_for("main.dashboard"))
     return redirect(url_for("main.products"))
 
 
@@ -632,6 +660,9 @@ def update_packaging_product_connections():
 
         if package_collection is None:
             flash("Invalid packaging level.", "danger")
+            referer = request.headers.get('Referer', '')
+            if '/dashboard' in referer:
+                return redirect(url_for("main.dashboard"))
             return redirect(url_for("main.products"))
 
         # Get the package's current connections to find which products to unlink
@@ -689,6 +720,10 @@ def update_packaging_product_connections():
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "danger")
 
+    # Redirect based on referer
+    referer = request.headers.get('Referer', '')
+    if '/dashboard' in referer:
+        return redirect(url_for("main.dashboard"))
     return redirect(url_for("main.products"))
 
 
@@ -711,6 +746,9 @@ def update_packaging_supplier_connection():
 
         if package_collection is None:
             flash("Invalid packaging level.", "danger")
+            referer = request.headers.get('Referer', '')
+            if '/dashboard' in referer:
+                return redirect(url_for("main.dashboard"))
             return redirect(url_for("main.products"))
 
         # Get old supplier to unlink later
@@ -749,6 +787,10 @@ def update_packaging_supplier_connection():
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "danger")
     
+    # Redirect based on referer
+    referer = request.headers.get('Referer', '')
+    if '/dashboard' in referer:
+        return redirect(url_for("main.dashboard"))
     return redirect(url_for("main.products"))
 
 
@@ -989,18 +1031,39 @@ def dashboard():
         {"owner": owner_id}
     ).sort("timestamp", -1).limit(10))
 
+    # --- Fetch data for edit modals ---
+    all_primary_packagings = list(mongo.db.primary_packagings.find({"owner": owner_id}))
+    all_secondary_packagings = list(mongo.db.secondary_packagings.find({"owner": owner_id}))
+    all_tertiary_packagings = list(mongo.db.tertiary_packagings.find({"owner": owner_id}))
+    partners = list(mongo.db.partners.find({"owner": owner_id}))
+    # For editLinkedProductsModal, we need all products (use user_products as products)
+    products = user_products
+    
+    # Fetch data setup items for packaging modals
+    component_types = list(mongo.db.component_types.find({"owner": owner_id}).sort("name", 1))
+    adhesives = list(mongo.db.adhesives.find({"owner": owner_id}).sort("name", 1))
+    food_contacts = list(mongo.db.food_contacts.find({"owner": owner_id}).sort("name", 1))
+
     return render_template(
         'dashboard_page.html',
         packaging_qty_by_grade=packaging_qty_by_grade,
         packaging_weight_by_grade=packaging_weight_kg_by_grade,
         packaging_trend=sorted_packaging_trend,
-        products=user_products,
+        products=products,  # For both filter and edit modals
         start_date=start_date_str,
         end_date=end_date_str,
         datetime=datetime,
         request=request,
         latest_activities=latest_activities,
-        get_activity_icon=get_activity_icon
+        get_activity_icon=get_activity_icon,
+        # For edit modals
+        all_primary_packagings=all_primary_packagings,
+        all_secondary_packagings=all_secondary_packagings,
+        all_tertiary_packagings=all_tertiary_packagings,
+        partners=partners,
+        component_types=component_types,
+        adhesives=adhesives,
+        food_contacts=food_contacts
     )
 
 
@@ -1023,7 +1086,160 @@ def reports():
 @main_bp.get("/data-setup")
 @login_required
 def data_setup():
-    return render_template("dashboard_page.html")
+    owner_id = ObjectId(current_user.id)
+    
+    # Fetch all items for each list
+    component_types = list(mongo.db.component_types.find({"owner": owner_id}).sort("name", 1))
+    adhesives = list(mongo.db.adhesives.find({"owner": owner_id}).sort("name", 1))
+    food_contacts = list(mongo.db.food_contacts.find({"owner": owner_id}).sort("name", 1))
+    
+    return render_template(
+        "data_setup_page.html",
+        component_types=component_types,
+        adhesives=adhesives,
+        food_contacts=food_contacts
+    )
+
+
+@main_bp.route("/add_data_setup_item", methods=["POST"])
+@login_required
+def add_data_setup_item():
+    try:
+        owner_id = ObjectId(current_user.id)
+        item_type = request.form.get("type")
+        name = request.form.get("name", "").strip()
+        
+        if not name:
+            return jsonify({"status": "error", "message": "Name is required"}), 400
+        
+        # Determine collection based on type
+        collection_map = {
+            "component_type": mongo.db.component_types,
+            "adhesive": mongo.db.adhesives,
+            "food_contact": mongo.db.food_contacts
+        }
+        
+        if item_type not in collection_map:
+            return jsonify({"status": "error", "message": "Invalid item type"}), 400
+        
+        collection = collection_map[item_type]
+        
+        # Check if name already exists for this owner
+        existing = collection.find_one({"owner": owner_id, "name": name})
+        if existing:
+            return jsonify({"status": "error", "message": "This name already exists"}), 400
+        
+        # Insert new item
+        result = collection.insert_one({
+            "owner": owner_id,
+            "name": name,
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        return jsonify({
+            "status": "success",
+            "item_id": str(result.inserted_id),
+            "message": "Item added successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@main_bp.route("/update_data_setup_item", methods=["POST"])
+@login_required
+def update_data_setup_item():
+    try:
+        owner_id = ObjectId(current_user.id)
+        item_id = request.form.get("item_id")
+        item_type = request.form.get("type")
+        name = request.form.get("name", "").strip()
+        
+        if not name:
+            return jsonify({"status": "error", "message": "Name is required"}), 400
+        
+        if not item_id:
+            return jsonify({"status": "error", "message": "Item ID is required"}), 400
+        
+        # Determine collection based on type
+        collection_map = {
+            "component_type": mongo.db.component_types,
+            "adhesive": mongo.db.adhesives,
+            "food_contact": mongo.db.food_contacts
+        }
+        
+        if item_type not in collection_map:
+            return jsonify({"status": "error", "message": "Invalid item type"}), 400
+        
+        collection = collection_map[item_type]
+        item_oid = ObjectId(item_id)
+        
+        # Verify ownership
+        item = collection.find_one({"_id": item_oid, "owner": owner_id})
+        if not item:
+            return jsonify({"status": "error", "message": "Item not found or access denied"}), 404
+        
+        # Check if name already exists for this owner (excluding current item)
+        existing = collection.find_one({
+            "owner": owner_id,
+            "name": name,
+            "_id": {"$ne": item_oid}
+        })
+        if existing:
+            return jsonify({"status": "error", "message": "This name already exists"}), 400
+        
+        # Update item
+        collection.update_one(
+            {"_id": item_oid, "owner": owner_id},
+            {"$set": {"name": name, "updated_at": datetime.now(timezone.utc)}}
+        )
+        
+        return jsonify({
+            "status": "success",
+            "message": "Item updated successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@main_bp.route("/delete_data_setup_item", methods=["POST"])
+@login_required
+def delete_data_setup_item():
+    try:
+        owner_id = ObjectId(current_user.id)
+        item_id = request.form.get("item_id")
+        item_type = request.form.get("type")
+        
+        if not item_id:
+            return jsonify({"status": "error", "message": "Item ID is required"}), 400
+        
+        # Determine collection based on type
+        collection_map = {
+            "component_type": mongo.db.component_types,
+            "adhesive": mongo.db.adhesives,
+            "food_contact": mongo.db.food_contacts
+        }
+        
+        if item_type not in collection_map:
+            return jsonify({"status": "error", "message": "Invalid item type"}), 400
+        
+        collection = collection_map[item_type]
+        item_oid = ObjectId(item_id)
+        
+        # Verify ownership and delete
+        result = collection.delete_one({"_id": item_oid, "owner": owner_id})
+        
+        if result.deleted_count == 0:
+            return jsonify({"status": "error", "message": "Item not found or access denied"}), 404
+        
+        return jsonify({
+            "status": "success",
+            "message": "Item deleted successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @main_bp.get("/settings")
 @login_required
@@ -1894,6 +2110,8 @@ def update_packaging(package_id):
             dimensions['radius'] = request.form.get('cylRadius')
         elif package_shape == 'sphere':
             dimensions['radius'] = request.form.get('sphRadius')
+        elif package_shape == 'other':
+            dimensions['volume'] = request.form.get('volume')
         
         # --- Material Composition ---
         components = request.form.getlist('packageComponent[]')

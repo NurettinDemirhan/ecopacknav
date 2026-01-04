@@ -54,7 +54,8 @@
       <a class="footer-icon" href="{{ url_for('main.logout') }}" title="Logout"><i class="bi bi-person"></i></a>
     </div>
 
-    <div class="powered" style="text-align: center;">
+    <div class="powered" style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo" style="max-height: 2rem; height: auto;">
       <p style="margin: 0; font-size: 0.75rem;">© 2025 Genesis Probity Insights. All rights reserved.</p>
     </div>
   </div>

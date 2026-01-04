@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+
+{% block title %}Data & Setup{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/products_page.css') }}">
+<style>
+.data-setup-section {
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    max-height: none !important;
+}
+
+.data-setup-container {
+    display: flex;
+    gap: 1rem;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.data-setup-list {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(177, 176, 176);
+    min-height: 0;
+    min-width: 0;
+}
+
+.data-setup-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.data-setup-list-header h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.data-setup-list-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.data-setup-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.data-setup-item:hover {
+    background-color: #f5f5f5;
+}
+
+.data-setup-item-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.data-setup-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.data-setup-item.editing .data-setup-item-content {
+    flex: 1;
+}
+
+.data-setup-item.editing input {
+    flex: 1;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.data-setup-list-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.data-setup-list-body::-webkit-scrollbar-thumb {
+    background: #cfcfcf;
+    border-radius: 6px;
+}
+
+.data-setup-list-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="products-page-shell">
+    <header class="products-page-header">
+        <h1 class="products-page-header-text">Data & Setup</h1>
+    </header>
+
+    <section class="products-page-top-section data-setup-section" style="height: 93%; padding: 1rem;">
+        <div class="data-setup-container">
+            <!-- Component Type List -->
+            <div class="data-setup-list">
+                <div class="data-setup-list-header">
+                    <h3>Component Type</h3>
+                    <button type="button" class="btn btn-sm btn-outline-primary add-item-btn" data-list-type="component_type">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div class="data-setup-list-body" id="componentTypeList">
+                    {% for item in component_types %}
+                    <div class="data-setup-item" data-id="{{ item._id }}" data-type="component_type">
+                        <div class="data-setup-item-content">
+                            <span class="item-value">{{ item.name }}</span>
+                        </div>
+                        <div class="data-setup-item-actions">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Adhesive List -->
+            <div class="data-setup-list">
+                <div class="data-setup-list-header">
+                    <h3>Adhesive</h3>
+                    <button type="button" class="btn btn-sm btn-outline-primary add-item-btn" data-list-type="adhesive">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div class="data-setup-list-body" id="adhesiveList">
+                    {% for item in adhesives %}
+                    <div class="data-setup-item" data-id="{{ item._id }}" data-type="adhesive">
+                        <div class="data-setup-item-content">
+                            <span class="item-value">{{ item.name }}</span>
+                        </div>
+                        <div class="data-setup-item-actions">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Food Contact List -->
+            <div class="data-setup-list">
+                <div class="data-setup-list-header">
+                    <h3>Food Contact</h3>
+                    <button type="button" class="btn btn-sm btn-outline-primary add-item-btn" data-list-type="food_contact">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div class="data-setup-list-body" id="foodContactList">
+                    {% for item in food_contacts %}
+                    <div class="data-setup-item" data-id="{{ item._id }}" data-type="food_contact">
+                        <div class="data-setup-item-content">
+                            <span class="item-value">{{ item.name }}</span>
+                        </div>
+                        <div class="data-setup-item-actions">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add item functionality
+    document.querySelectorAll('.add-item-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const listType = this.dataset.listType;
+            const listBody = document.getElementById(listType === 'component_type' ? 'componentTypeList' : 
+                                                      listType === 'adhesive' ? 'adhesiveList' : 'foodContactList');
+            
+            // Create new item row
+            const newItem = document.createElement('div');
+            newItem.className = 'data-setup-item editing';
+            newItem.dataset.type = listType;
+            newItem.innerHTML = `
+                <div class="data-setup-item-content">
+                    <input type="text" class="form-control form-control-sm" placeholder="Enter name..." autofocus>
+                </div>
+                <div class="data-setup-item-actions">
+                    <button type="button" class="btn btn-sm btn-outline-success save-item-btn">
+                        <i class="bi bi-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary cancel-item-btn">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            `;
+            
+            listBody.insertBefore(newItem, listBody.firstChild);
+            
+            // Focus on input
+            const input = newItem.querySelector('input');
+            input.focus();
+            
+            // Save on Enter key
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    newItem.querySelector('.save-item-btn').click();
+                }
+            });
+            
+            // Save button
+            newItem.querySelector('.save-item-btn').addEventListener('click', function() {
+                const value = input.value.trim();
+                if (!value) {
+                    alert('Please enter a value');
+                    return;
+                }
+                
+                // Create item via API
+                fetch('/add_data_setup_item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        type: listType,
+                        name: value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Replace with saved item
+                        newItem.className = 'data-setup-item';
+                        newItem.dataset.id = data.item_id;
+                        newItem.innerHTML = `
+                            <div class="data-setup-item-content">
+                                <span class="item-value">${value}</span>
+                            </div>
+                            <div class="data-setup-item-actions">
+                                <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                        attachItemEventListeners(newItem);
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to add item'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while adding the item.');
+                });
+            });
+            
+            // Cancel button
+            newItem.querySelector('.cancel-item-btn').addEventListener('click', function() {
+                newItem.remove();
+            });
+        });
+    });
+    
+    // Edit item functionality
+    function attachItemEventListeners(item) {
+        const editBtn = item.querySelector('.edit-item-btn');
+        const deleteBtn = item.querySelector('.delete-item-btn');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', function() {
+                const itemElement = this.closest('.data-setup-item');
+                const currentValue = itemElement.querySelector('.item-value').textContent;
+                const itemId = itemElement.dataset.id;
+                const itemType = itemElement.dataset.type;
+                
+                // Switch to edit mode
+                itemElement.classList.add('editing');
+                const contentDiv = itemElement.querySelector('.data-setup-item-content');
+                contentDiv.innerHTML = `<input type="text" class="form-control form-control-sm" value="${currentValue}" autofocus>`;
+                
+                // Update action buttons
+                const actionsDiv = itemElement.querySelector('.data-setup-item-actions');
+                actionsDiv.innerHTML = `
+                    <button type="button" class="btn btn-sm btn-outline-success save-edit-btn">
+                        <i class="bi bi-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary cancel-edit-btn">
+                        <i class="bi bi-x"></i>
+                    </button>
+                `;
+                
+                const input = contentDiv.querySelector('input');
+                input.focus();
+                input.select();
+                
+                // Save on Enter key
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        itemElement.querySelector('.save-edit-btn').click();
+                    }
+                });
+                
+                // Save edit
+                itemElement.querySelector('.save-edit-btn').addEventListener('click', function() {
+                    const newValue = input.value.trim();
+                    if (!newValue) {
+                        alert('Please enter a value');
+                        return;
+                    }
+                    
+                    fetch('/update_data_setup_item', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            item_id: itemId,
+                            type: itemType,
+                            name: newValue
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Switch back to view mode
+                            itemElement.classList.remove('editing');
+                            contentDiv.innerHTML = `<span class="item-value">${newValue}</span>`;
+                            actionsDiv.innerHTML = `
+                                <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            `;
+                            attachItemEventListeners(itemElement);
+                        } else {
+                            alert('Error: ' + (data.message || 'Failed to update item'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating the item.');
+                    });
+                });
+                
+                // Cancel edit
+                itemElement.querySelector('.cancel-edit-btn').addEventListener('click', function() {
+                    itemElement.classList.remove('editing');
+                    contentDiv.innerHTML = `<span class="item-value">${currentValue}</span>`;
+                    actionsDiv.innerHTML = `
+                        <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
+                    attachItemEventListeners(itemElement);
+                });
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function() {
+                const itemElement = this.closest('.data-setup-item');
+                const itemId = itemElement.dataset.id;
+                const itemType = itemElement.dataset.type;
+                const itemName = itemElement.querySelector('.item-value').textContent;
+                
+                if (confirm(`Are you sure you want to delete "${itemName}"?`)) {
+                    fetch('/delete_data_setup_item', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            item_id: itemId,
+                            type: itemType
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            itemElement.remove();
+                        } else {
+                            alert('Error: ' + (data.message || 'Failed to delete item'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting the item.');
+                    });
+                }
+            });
+        }
+    }
+    
+    // Attach listeners to existing items
+    document.querySelectorAll('.data-setup-item').forEach(item => {
+        attachItemEventListeners(item);
+    });
+});
+</script>
+{% endblock %}
+

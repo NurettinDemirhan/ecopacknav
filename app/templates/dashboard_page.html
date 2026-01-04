@@ -248,13 +248,125 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <ul class="list-group" id="all-activities-list">
-                    <li class="list-group-item">Loading...</li>
-                </ul>
+                <div class="list-group activity-list" id="all-activities-list">
+                    <div class="list-group-item">Loading...</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Product Details Offcanvas (for dashboard) -->
+<div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="productDetailOffcanvas" aria-labelledby="productDetailOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="productDetailOffcanvasLabel">Product Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="offcanvas-content">
+        <div id="offcanvas-product-code-container">
+            <div class="detail-line">
+                <span class="detail-label">Code:</span>
+                <span id="offcanvas-product-code"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Sec. Code:</span>
+                <span id="offcanvas-sec-product-code"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Category:</span>
+                <span id="offcanvas-product-category"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Description:</span>
+                <span id="offcanvas-product-description"></span>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Packagings</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editPackagingModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <table class="packaging-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Level</th>
+                            <th>Recyclability</th>
+                        </tr>
+                    </thead>
+                    <tbody id="offcanvas-packaging-table-body">
+                        <!-- JS will populate this -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Partners</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editCustomerModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <p><strong>Customer:</strong> <span id="offcanvas-customer"></span></p>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Packaging Details Offcanvas (for dashboard) -->
+<div class="offcanvas offcanvas-end offcanvas-custom" tabindex="-1" id="packagingDetailOffcanvas" aria-labelledby="packagingDetailOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="packagingDetailOffcanvasLabel">Packaging Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="offcanvas-packaging-content">
+        <div id="offcanvas-packaging-code-container">
+            <h3 id="offcanvas-packaging-code"></h3>
+            <p id="offcanvas-packaging-level" class="text-muted"></p>
+            <div class="detail-line">
+                <span class="detail-label">Component:</span>
+                <span id="offcanvas-packaging-component"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Material:</span>
+                <span id="offcanvas-packaging-material"></span>
+            </div>
+            <div class="detail-line">
+                <span class="detail-label">Recyclability:</span>
+                <span id="offcanvas-packaging-recyclability"></span>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Products</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editLinkedProductsModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <ul class="list-group" id="offcanvas-linked-products-list">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-header">
+                <h5>Linked Partners</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editPackagingSupplierModal">Edit</button>
+            </div>
+            <div class="detail-section-body">
+                <p><strong>Supplier:</strong> <span id="offcanvas-packaging-supplier"></span></p>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+{% include "product_edit_packaging_modal.html" %}
+{% include "product_edit_customer_modal.html" %}
+{% include "packaging_edit_products_modal.html" %}
+{% include "packaging_edit_supplier_modal.html" %}
 {% endblock %}
 
 {% block page_js %}
@@ -393,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (allActivitiesModal) {
         allActivitiesModal.addEventListener('show.bs.modal', function () {
             const list = document.getElementById('all-activities-list');
-            list.innerHTML = '<li class="list-group-item">Loading...</li>'; // Reset on open
+            list.innerHTML = '<div class="list-group-item">Loading...</div>'; // Reset on open
 
             const getActivityIcon = (activityType) => {
                 if (typeof activityType !== 'string') {
@@ -460,17 +572,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     list.innerHTML = ''; // Clear loading indicator
                     if (activities && activities.length > 0) {
                         activities.forEach(activity => {
-                            const item = document.createElement('li');
-                            item.className = 'list-group-item';
+                            const item = document.createElement('div');
+                            item.className = 'list-group-item activity-item';
 
                             const iconClass = getActivityIcon(activity.type);
+                            
+                            // Format timestamp like in the normal list (YYYY-MM-DD HH:MM)
+                            const timestamp = new Date(activity.timestamp);
+                            const year = timestamp.getFullYear();
+                            const month = String(timestamp.getMonth() + 1).padStart(2, '0');
+                            const day = String(timestamp.getDate()).padStart(2, '0');
+                            const hours = String(timestamp.getHours()).padStart(2, '0');
+                            const minutes = String(timestamp.getMinutes()).padStart(2, '0');
+                            const formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}`;
 
                             const innerHtml = `
                                 <div class="d-flex w-100 justify-content-start align-items-center">
-                                    <i class="bi ${iconClass} me-3"></i>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-1">${activity.description}</p>
-                                        <small class="text-muted">${new Date(activity.timestamp).toLocaleString()}</small>
+                                    <div class="activity-icon-container me-3">
+                                        <i class="bi ${iconClass}"></i>
+                                    </div>
+                                    <div class="flex-grow-1 d-flex justify-content-between align-items-center">
+                                        <p class="mb-0">${activity.description}</p>
+                                        <small class="text-muted">${formattedTimestamp}</small>
                                     </div>
                                 </div>
                             `;
@@ -479,12 +602,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             list.appendChild(item);
                         });
                     } else {
-                        list.innerHTML = '<li class="list-group-item">No activities found.</li>';
+                        list.innerHTML = '<div class="list-group-item">No activities found.</div>';
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching activities:', error);
-                    list.innerHTML = '<li class="list-group-item text-danger">Failed to load activities.</li>';
+                    list.innerHTML = '<div class="list-group-item text-danger">Failed to load activities.</div>';
                 });
         });
     }
@@ -637,7 +760,130 @@ if (productListModal) {
                         items.forEach(item => {
                             const li = document.createElement('li');
                             li.className = 'list-group-item';
+                            li.style.cursor = 'pointer';
                             li.textContent = item.product_code || item.package_code || 'N/A';
+                            
+                            // Add data attributes for click handling
+                            if (type === 'products') {
+                                li.dataset.itemId = item._id;
+                                li.dataset.itemType = 'product';
+                            } else {
+                                li.dataset.itemId = item._id;
+                                li.dataset.itemType = 'packaging';
+                                li.dataset.itemLevel = item.level;
+                            }
+                            
+                            // Add click event to open detail offcanvas
+                            li.addEventListener('click', function() {
+                                const itemId = this.dataset.itemId;
+                                const itemType = this.dataset.itemType;
+                                
+                                if (itemType === 'product') {
+                                    // Fetch product details and open offcanvas (modal stays open behind)
+                                    fetch(`/get_product_details/${itemId}`)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data) {
+                                                document.getElementById('offcanvas-product-code').textContent = data.product_code || '—';
+                                                document.getElementById('offcanvas-sec-product-code').textContent = data.secondary_product_code || '—';
+                                                document.getElementById('offcanvas-product-category').textContent = data.product_category || '—';
+                                                document.getElementById('offcanvas-product-description').textContent = data.product_description || '—';
+                                                
+                                                const packagingTableBody = document.getElementById('offcanvas-packaging-table-body');
+                                                packagingTableBody.innerHTML = '';
+                                                if (data.connections.packaging && data.connections.packaging.length > 0) {
+                                                    data.connections.packaging.forEach(pkg => {
+                                                        const row = `<tr><td>${pkg.code || '—'}</td><td>${pkg.level || '—'}</td><td>${pkg.recyclability || '—'}</td></tr>`;
+                                                        packagingTableBody.insertAdjacentHTML('beforeend', row);
+                                                    });
+                                                } else {
+                                                    const row = `<tr><td colspan="3" class="text-muted text-center">No packaging linked.</td></tr>`;
+                                                    packagingTableBody.insertAdjacentHTML('beforeend', row);
+                                                }
+                                                
+                                                document.getElementById('offcanvas-customer').textContent = data.connections.customer_name || 'Not linked';
+                                                
+                                                // Set data attributes for edit buttons
+                                                const editPackagingBtn = document.querySelector('[data-bs-target="#editPackagingModal"]');
+                                                const editCustomerBtn = document.querySelector('[data-bs-target="#editCustomerModal"]');
+                                                if (editPackagingBtn) {
+                                                    editPackagingBtn.setAttribute('data-product-id', itemId);
+                                                }
+                                                if (editCustomerBtn) {
+                                                    editCustomerBtn.setAttribute('data-product-id', itemId);
+                                                }
+                                                
+                                                // Open product detail offcanvas (will appear above modal due to z-index)
+                                                const productOffcanvas = document.getElementById('productDetailOffcanvas');
+                                                if (productOffcanvas) {
+                                                    const offcanvasInstance = new bootstrap.Offcanvas(productOffcanvas);
+                                                    offcanvasInstance.show();
+                                                }
+                                            }
+                                        })
+                                        .catch(error => console.error('Error:', error));
+                                } else if (itemType === 'packaging') {
+                                    const itemLevel = this.dataset.itemLevel;
+                                    
+                                    // Fetch packaging details and open offcanvas (modal stays open behind)
+                                    fetch(`/get_packaging_details?id=${itemId}&level=${itemLevel}`)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data) {
+                                                document.getElementById('offcanvas-packaging-code').textContent = data.package_code || '—';
+                                                document.getElementById('offcanvas-packaging-level').textContent = data.level || '—';
+                                                document.getElementById('offcanvas-packaging-component').textContent = data.component_type || '—';
+                                                document.getElementById('offcanvas-packaging-material').textContent = data.material || '—';
+                                                
+                                                const recyclabilitySpan = document.getElementById('offcanvas-packaging-recyclability');
+                                                const gradeValue = data.recyclability || '—';
+                                                recyclabilitySpan.textContent = gradeValue;
+                                                recyclabilitySpan.className = '';
+                                                if (gradeValue && gradeValue !== '—') {
+                                                    const gradeLetter = gradeValue.charAt(0).toUpperCase();
+                                                    if (['A', 'B', 'C', 'D'].includes(gradeLetter)) {
+                                                        recyclabilitySpan.classList.add('grade', `grade-${gradeLetter.toLowerCase()}`);
+                                                    }
+                                                }
+                                                
+                                                const linkedProductsList = document.getElementById('offcanvas-linked-products-list');
+                                                linkedProductsList.innerHTML = '';
+                                                if (data.linked_products && data.linked_products.length > 0) {
+                                                    data.linked_products.forEach(product => {
+                                                        const item = `<li class="list-group-item">${product.product_code}</li>`;
+                                                        linkedProductsList.insertAdjacentHTML('beforeend', item);
+                                                    });
+                                                } else {
+                                                    const item = `<li class="list-group-item text-muted">No products linked.</li>`;
+                                                    linkedProductsList.insertAdjacentHTML('beforeend', item);
+                                                }
+                                                
+                                                document.getElementById('offcanvas-packaging-supplier').textContent = data.supplier_name || 'Not linked';
+                                                
+                                                // Set data attributes for edit buttons
+                                                const editLinkedProductsBtn = document.querySelector('[data-bs-target="#editLinkedProductsModal"]');
+                                                const editPackagingSupplierBtn = document.querySelector('[data-bs-target="#editPackagingSupplierModal"]');
+                                                if (editLinkedProductsBtn) {
+                                                    editLinkedProductsBtn.setAttribute('data-package-id', itemId);
+                                                    editLinkedProductsBtn.setAttribute('data-package-level', itemLevel);
+                                                }
+                                                if (editPackagingSupplierBtn) {
+                                                    editPackagingSupplierBtn.setAttribute('data-package-id', itemId);
+                                                    editPackagingSupplierBtn.setAttribute('data-package-level', itemLevel);
+                                                }
+                                                
+                                                // Open packaging detail offcanvas (will appear above modal due to z-index)
+                                                const packagingOffcanvas = document.getElementById('packagingDetailOffcanvas');
+                                                if (packagingOffcanvas) {
+                                                    const offcanvasInstance = new bootstrap.Offcanvas(packagingOffcanvas);
+                                                    offcanvasInstance.show();
+                                                }
+                                            }
+                                        })
+                                        .catch(error => console.error('Error:', error));
+                                }
+                            });
+                            
                             listContainer.appendChild(li);
                         });
                     } else {
@@ -700,8 +946,9 @@ if (missingRecyclabilityModal) {
                     const tbody = table.querySelector('#missing-recyclability-table-body');
                     data.packagings.forEach(pkg => {
                         const row = document.createElement('tr');
+                        row.style.cursor = 'pointer';
                         row.innerHTML = `
-                            <td>${pkg.package_code}</td>
+                            <td class="package-code-cell">${pkg.package_code}</td>
                             <td>${pkg.level}</td>
                             <td>${pkg.material || '—'}</td>
                             <td class="text-center">
@@ -715,6 +962,72 @@ if (missingRecyclabilityModal) {
                                    data-material="${pkg.material || ''}"></i>
                             </td>
                         `;
+                        
+                        // Add click event to open packaging detail offcanvas (except on the icon)
+                        row.addEventListener('click', function(e) {
+                            // Don't trigger if clicking on the recyclability icon
+                            if (e.target.classList.contains('recyclability-trigger') || e.target.closest('.recyclability-trigger')) {
+                                return;
+                            }
+                            
+                            // Fetch packaging details and open offcanvas (modal stays open behind)
+                            fetch(`/get_packaging_details?id=${pkg._id}&level=${pkg.level}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data) {
+                                        document.getElementById('offcanvas-packaging-code').textContent = data.package_code || '—';
+                                        document.getElementById('offcanvas-packaging-level').textContent = data.level || '—';
+                                        document.getElementById('offcanvas-packaging-component').textContent = data.component_type || '—';
+                                        document.getElementById('offcanvas-packaging-material').textContent = data.material || '—';
+                                        
+                                        const recyclabilitySpan = document.getElementById('offcanvas-packaging-recyclability');
+                                        const gradeValue = data.recyclability || '—';
+                                        recyclabilitySpan.textContent = gradeValue;
+                                        recyclabilitySpan.className = '';
+                                        if (gradeValue && gradeValue !== '—') {
+                                            const gradeLetter = gradeValue.charAt(0).toUpperCase();
+                                            if (['A', 'B', 'C', 'D'].includes(gradeLetter)) {
+                                                recyclabilitySpan.classList.add('grade', `grade-${gradeLetter.toLowerCase()}`);
+                                            }
+                                        }
+                                        
+                                        const linkedProductsList = document.getElementById('offcanvas-linked-products-list');
+                                        linkedProductsList.innerHTML = '';
+                                        if (data.linked_products && data.linked_products.length > 0) {
+                                            data.linked_products.forEach(product => {
+                                                const item = `<li class="list-group-item">${product.product_code}</li>`;
+                                                linkedProductsList.insertAdjacentHTML('beforeend', item);
+                                            });
+                                        } else {
+                                            const item = `<li class="list-group-item text-muted">No products linked.</li>`;
+                                            linkedProductsList.insertAdjacentHTML('beforeend', item);
+                                        }
+                                        
+                                        document.getElementById('offcanvas-packaging-supplier').textContent = data.supplier_name || 'Not linked';
+                                        
+                                        // Set data attributes for edit buttons
+                                        const editLinkedProductsBtn = document.querySelector('[data-bs-target="#editLinkedProductsModal"]');
+                                        const editPackagingSupplierBtn = document.querySelector('[data-bs-target="#editPackagingSupplierModal"]');
+                                        if (editLinkedProductsBtn) {
+                                            editLinkedProductsBtn.setAttribute('data-package-id', pkg._id);
+                                            editLinkedProductsBtn.setAttribute('data-package-level', pkg.level);
+                                        }
+                                        if (editPackagingSupplierBtn) {
+                                            editPackagingSupplierBtn.setAttribute('data-package-id', pkg._id);
+                                            editPackagingSupplierBtn.setAttribute('data-package-level', pkg.level);
+                                        }
+                                        
+                                        // Open packaging detail offcanvas (will appear above modal due to z-index)
+                                        const packagingOffcanvas = document.getElementById('packagingDetailOffcanvas');
+                                        if (packagingOffcanvas) {
+                                            const offcanvasInstance = new bootstrap.Offcanvas(packagingOffcanvas);
+                                            offcanvasInstance.show();
+                                        }
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                        });
+                        
                         tbody.appendChild(row);
                     });
                     

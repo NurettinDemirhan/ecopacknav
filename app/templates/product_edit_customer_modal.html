@@ -44,6 +44,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const productId = button.getAttribute('data-product-id');
         productIdInput.value = productId;
         editCustomerForm.action = `/update_product_customer_connection/${productId}`;
+        
+        // Pre-select current customer
+        fetch(`/get_product_details/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.connections && data.connections.customer) {
+                    const customerSelect = document.getElementById('customer');
+                    if (customerSelect) {
+                        customerSelect.value = data.connections.customer;
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching product details:', error));
     });
 });
 </script>
