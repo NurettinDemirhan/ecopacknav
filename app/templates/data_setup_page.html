@@ -191,6 +191,33 @@
                     {% endfor %}
                 </div>
             </div>
+
+            <!-- Coating List -->
+            <div class="data-setup-list">
+                <div class="data-setup-list-header">
+                    <h3>Coating</h3>
+                    <button type="button" class="btn btn-sm btn-outline-primary add-item-btn" data-list-type="coating">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div class="data-setup-list-body" id="coatingList">
+                    {% for item in coatings %}
+                    <div class="data-setup-item" data-id="{{ item._id }}" data-type="coating">
+                        <div class="data-setup-item-content">
+                            <span class="item-value">{{ item.name }}</span>
+                        </div>
+                        <div class="data-setup-item-actions">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-item-btn">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-item-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </section>
 </div>
@@ -204,7 +231,8 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const listType = this.dataset.listType;
             const listBody = document.getElementById(listType === 'component_type' ? 'componentTypeList' : 
-                                                      listType === 'adhesive' ? 'adhesiveList' : 'foodContactList');
+                                                      listType === 'adhesive' ? 'adhesiveList' : 
+                                                      listType === 'food_contact' ? 'foodContactList' : 'coatingList');
             
             // Create new item row
             const newItem = document.createElement('div');

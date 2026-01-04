@@ -632,6 +632,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             productForm.querySelector('[name="cylRadius"]').value = data.dimensions.radius || '';
                                         } else if (data.product_shape === 'sphere') {
                                             productForm.querySelector('[name="sphRadius"]').value = data.dimensions.radius || '';
+                                        } else if (data.product_shape === 'other') {
+                                            productForm.querySelector('[name="volume"]').value = data.dimensions.volume || '';
                                         }
                                     }
                                 }
@@ -812,6 +814,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         currentGroup.querySelector('[name="thicknessMicrons[]"]').value = materialData.thickness_microns || '';
                                         currentGroup.querySelector('[name="adhesiveType[]"]').value = materialData.adhesive_type || '';
                                         currentGroup.querySelector('[name="foodContact[]"]').value = materialData.food_contact || '';
+                                        currentGroup.querySelector('[name="coatingType[]"]').value = materialData.coating || '';
                                     }
                                 });
                             }

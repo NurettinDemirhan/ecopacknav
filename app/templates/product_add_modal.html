@@ -64,6 +64,7 @@
                 <option value="rectangular">Rectangular Prism</option>
                 <option value="cylinder">Cylinder</option>
                 <option value="sphere">Sphere</option>
+                <option value="other">Other</option>
               </select>
               <div class="invalid-feedback">Please provide a product shape.</div>
             </div>
@@ -96,6 +97,13 @@
             </div>
           </div>
 
+          <!-- Other Dimensions (Volume) -->
+          <div id="otherFields" class="d-none mb-3">
+            <div class="row g-2 mb-3">
+              <div class="col-md-6"><label class="form-label">Volume (cm³) <span class="text-danger">*</span></label><input type="number" class="form-control" name="volume" onkeydown="preventNegative(event)"><div class="invalid-feedback">Required.</div></div>
+            </div>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" id="productSubmitBtn" class="btn btn-primary">Add Product</button>
@@ -117,6 +125,8 @@
         form.querySelector("#rectangularFields").classList.add("d-none");
         form.querySelector("#cylinderFields").classList.add("d-none");
         form.querySelector("#sphereFields").classList.add("d-none");
+        const otherFields = form.querySelector("#otherFields");
+        if (otherFields) otherFields.classList.add("d-none");
 
         if (material === "solid") {
             form.querySelector("#solidField").classList.remove("d-none");
@@ -126,6 +136,8 @@
                 form.querySelector("#cylinderFields").classList.remove("d-none");
             } else if (shape === "sphere") {
                 form.querySelector("#sphereFields").classList.remove("d-none");
+            } else if (shape === "other") {
+                if (otherFields) otherFields.classList.remove("d-none");
             }
         } else if (material === "liquid/gas") {
             form.querySelector("#liquidGasField").classList.remove("d-none");
@@ -167,14 +179,22 @@
                 isValid = false;
             } else {
                 const shape = productShape.value;
-                const dimFields = form.querySelector(`#${shape}Fields`);
-                if (dimFields) {
-                    dimFields.querySelectorAll('input').forEach(input => {
-                        if (!input.value) {
-                            input.classList.add('is-invalid');
-                            isValid = false;
-                        }
-                    });
+                if (shape === "other") {
+                    const volumeInput = form.querySelector('[name="volume"]');
+                    if (!volumeInput || !volumeInput.value) {
+                        if (volumeInput) volumeInput.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                } else {
+                    const dimFields = form.querySelector(`#${shape}Fields`);
+                    if (dimFields) {
+                        dimFields.querySelectorAll('input').forEach(input => {
+                            if (!input.value) {
+                                input.classList.add('is-invalid');
+                                isValid = false;
+                            }
+                        });
+                    }
                 }
             }
         }

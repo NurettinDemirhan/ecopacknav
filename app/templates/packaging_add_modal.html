@@ -122,9 +122,12 @@
                                 <div class="col-md-6"><label class="form-label">Recycled %</label><input type="number" name="recycledContent[]" class="form-control"></div>
                             </div>
                             <div class="row g-2 mb-2">
-                                <div class="col-md-4"><label class="form-label">Thickness (µm) <span class="text-danger">*</span></label><input type="number" name="thicknessMicrons[]" class="form-control"><div class="invalid-feedback">Required.</div></div>
-                                <div class="col-md-4"><label class="form-label">Adhesive <span class="text-danger">*</span></label><select name="adhesiveType[]" class="form-select"><option value="">-- Select --</option>{% for item in adhesives %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
-                                <div class="col-md-4"><label class="form-label">Food Contact <span class="text-danger">*</span></label><select name="foodContact[]" class="form-select"><option value="">-- Select --</option>{% for item in food_contacts %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-6"><label class="form-label">Thickness (µm) <span class="text-danger">*</span></label><input type="number" name="thicknessMicrons[]" class="form-control"><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-6"><label class="form-label">Adhesive <span class="text-danger">*</span></label><select name="adhesiveType[]" class="form-select"><option value="">-- Select --</option>{% for item in adhesives %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6"><label class="form-label">Food Contact <span class="text-danger">*</span></label><select name="foodContact[]" class="form-select"><option value="">-- Select --</option>{% for item in food_contacts %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
+                                <div class="col-md-6"><label class="form-label">Coating <span class="text-danger">*</span></label><select name="coatingType[]" class="form-select"><option value="">-- Select --</option>{% for item in coatings %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}</select><div class="invalid-feedback">Required.</div></div>
                             </div>
                         </div>
                     </div>
@@ -235,7 +238,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     'input[name="weightGrams[]"]',
                     'input[name="thicknessMicrons[]"]',
                     'select[name="adhesiveType[]"]',
-                    'select[name="foodContact[]"]'
+                    'select[name="foodContact[]"]',
+                    'select[name="coatingType[]"]'
                 ];
                 mandatoryInGroup.forEach(selector => {
                     const field = group.querySelector(selector);

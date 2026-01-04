@@ -216,6 +216,7 @@ def products():
     component_types = list(mongo.db.component_types.find({"owner": user_oid}).sort("name", 1))
     adhesives = list(mongo.db.adhesives.find({"owner": user_oid}).sort("name", 1))
     food_contacts = list(mongo.db.food_contacts.find({"owner": user_oid}).sort("name", 1))
+    coatings = list(mongo.db.coatings.find({"owner": user_oid}).sort("name", 1))
 
     return render_template(
         "products_page.html",
@@ -227,7 +228,8 @@ def products():
         all_tertiary_packagings=all_tertiary_packagings,
         component_types=component_types,
         adhesives=adhesives,
-        food_contacts=food_contacts
+        food_contacts=food_contacts,
+        coatings=coatings
     )
 
 
@@ -278,6 +280,8 @@ def add_product():
                 dimensions['radius'] = request.form.get('cylRadius')
             elif product_shape == 'sphere':
                 dimensions['radius'] = request.form.get('sphRadius')
+            elif product_shape == 'other':
+                dimensions['volume'] = request.form.get('volume')
             
             new_product['dimensions'] = dimensions
             new_product['volume_cm3'] = calculate_volume(product_shape, dimensions)
@@ -341,6 +345,8 @@ def update_product(product_id):
                 dimensions['radius'] = request.form.get('cylRadius')
             elif product_shape == 'sphere':
                 dimensions['radius'] = request.form.get('sphRadius')
+            elif product_shape == 'other':
+                dimensions['volume'] = request.form.get('volume')
             
             update_doc['dimensions'] = dimensions
             update_doc['volume_cm3'] = calculate_volume(product_shape, dimensions)
@@ -415,6 +421,7 @@ def add_packaging():
         thicknesses = request.form.getlist('thicknessMicrons[]')
         adhesives = request.form.getlist('adhesiveType[]')
         food_contacts = request.form.getlist('foodContact[]')
+        coatings = request.form.getlist('coatingType[]')
 
         materials_list = []
         for i in range(len(components)):
@@ -426,7 +433,8 @@ def add_packaging():
                 "recycled_content": _safe_float(recycled_contents[i]),
                 "thickness_microns": _safe_float(thicknesses[i]),
                 "adhesive_type": adhesives[i],
-                "food_contact": food_contacts[i]
+                "food_contact": food_contacts[i],
+                "coating": coatings[i]
             })
             
         # --- Document Assembly ---
@@ -1043,6 +1051,7 @@ def dashboard():
     component_types = list(mongo.db.component_types.find({"owner": owner_id}).sort("name", 1))
     adhesives = list(mongo.db.adhesives.find({"owner": owner_id}).sort("name", 1))
     food_contacts = list(mongo.db.food_contacts.find({"owner": owner_id}).sort("name", 1))
+    coatings = list(mongo.db.coatings.find({"owner": owner_id}).sort("name", 1))
 
     return render_template(
         'dashboard_page.html',
@@ -1063,7 +1072,8 @@ def dashboard():
         partners=partners,
         component_types=component_types,
         adhesives=adhesives,
-        food_contacts=food_contacts
+        food_contacts=food_contacts,
+        coatings=coatings
     )
 
 
@@ -1092,12 +1102,14 @@ def data_setup():
     component_types = list(mongo.db.component_types.find({"owner": owner_id}).sort("name", 1))
     adhesives = list(mongo.db.adhesives.find({"owner": owner_id}).sort("name", 1))
     food_contacts = list(mongo.db.food_contacts.find({"owner": owner_id}).sort("name", 1))
+    coatings = list(mongo.db.coatings.find({"owner": owner_id}).sort("name", 1))
     
     return render_template(
         "data_setup_page.html",
         component_types=component_types,
         adhesives=adhesives,
-        food_contacts=food_contacts
+        food_contacts=food_contacts,
+        coatings=coatings
     )
 
 
@@ -1116,7 +1128,8 @@ def add_data_setup_item():
         collection_map = {
             "component_type": mongo.db.component_types,
             "adhesive": mongo.db.adhesives,
-            "food_contact": mongo.db.food_contacts
+            "food_contact": mongo.db.food_contacts,
+            "coating": mongo.db.coatings
         }
         
         if item_type not in collection_map:
@@ -1165,7 +1178,8 @@ def update_data_setup_item():
         collection_map = {
             "component_type": mongo.db.component_types,
             "adhesive": mongo.db.adhesives,
-            "food_contact": mongo.db.food_contacts
+            "food_contact": mongo.db.food_contacts,
+            "coating": mongo.db.coatings
         }
         
         if item_type not in collection_map:
@@ -1218,7 +1232,8 @@ def delete_data_setup_item():
         collection_map = {
             "component_type": mongo.db.component_types,
             "adhesive": mongo.db.adhesives,
-            "food_contact": mongo.db.food_contacts
+            "food_contact": mongo.db.food_contacts,
+            "coating": mongo.db.coatings
         }
         
         if item_type not in collection_map:
@@ -2121,6 +2136,7 @@ def update_packaging(package_id):
         thicknesses = request.form.getlist('thicknessMicrons[]')
         adhesives = request.form.getlist('adhesiveType[]')
         food_contacts = request.form.getlist('foodContact[]')
+        coatings = request.form.getlist('coatingType[]')
 
         materials_list = []
         for i in range(len(components)):
@@ -2132,7 +2148,8 @@ def update_packaging(package_id):
                 "recycled_content": _safe_float(recycled_contents[i]),
                 "thickness_microns": _safe_float(thicknesses[i]),
                 "adhesive_type": adhesives[i],
-                "food_contact": food_contacts[i]
+                "food_contact": food_contacts[i],
+                "coating": coatings[i]
             })
             
         # --- Document Assembly for Update ---
